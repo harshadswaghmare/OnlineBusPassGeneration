@@ -29,13 +29,12 @@ public class PersonController {
     }
 
 
-    @DeleteMapping("Delete/{PersonalID}")
+    @DeleteMapping("DeletePersonal/{PersonalID}")
     public boolean delete(@PathVariable int PersonalID) {
         // boolean result = false;
         boolean result = PersonalDetailsRepository.delete(PersonalID);
         return result;
     }
-
 
     @PostMapping("/source/{source}")
 

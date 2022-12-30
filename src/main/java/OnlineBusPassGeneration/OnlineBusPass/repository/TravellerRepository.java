@@ -1,21 +1,14 @@
 package OnlineBusPassGeneration.OnlineBusPass.repository;
 
-import OnlineBusPassGeneration.OnlineBusPass.OnlineBusPassApplication;
 import OnlineBusPassGeneration.OnlineBusPass.connection.Connectivity;
+import OnlineBusPassGeneration.OnlineBusPass.model.PersonalDetails;
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TravellerRepository {
 
@@ -28,7 +21,7 @@ public class TravellerRepository {
         List<Object>list = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         Connection connection = null;
-        try
+        trycca
         {
             connection= Connectivity.CreateConnection();
             String query = "select * from UserLogin order by userid asc";
@@ -72,13 +65,10 @@ public class TravellerRepository {
 
 
     public static String insert(UserLogin userLogin) {
+
         boolean flag = false;
-
-        Pattern pattern = Pattern.compile("^$|^[\\w,]+$");
-
-        UserLogin obj = new UserLogin();
-
-
+       // Pattern pattern = Pattern.compile("^$|^[\\w,]+$");
+        //  UserLogin obj = new UserLogin();
         try {
 
             Connection connection = Connectivity.CreateConnection();
@@ -107,9 +97,6 @@ public class TravellerRepository {
         return "record Inserted Successfully";
     }
 
-
-
-
     public static boolean deleteFromUserLogin(@PathVariable int UserID) {
         boolean flag = false;
         try {
@@ -134,35 +121,60 @@ public class TravellerRepository {
         return flag;
     }
 
+
+
     //for PersonalDetails
-
-
-
-
-    public static String  updateUserLogin(UserLogin userLogin) {
-
-
+    public static String  updateUserLogin(@PathVariable int userID, UserLogin userLogin) {
+        String query = "update userLogin set email = ?,username =?,password =? where userID ="+userID;
         try {
             Connection connection = Connectivity.CreateConnection();
-            String query = "update UserLogin set email = ?, password = ? where userID = ? ";
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-           // preparedStatement.setInt(1, userLogin.getUserid());
-            preparedStatement.setString(2, userLogin.getUsername());
-            preparedStatement.setString(3, userLogin.getEmail());
-            preparedStatement.setString(4, userLogin.getPassword());
 
-            preparedStatement.executeUpdate();
+            preparedStatement.setString(1,userLogin.getEmail());
+            preparedStatement.setString(2,userLogin.getUsername());
+            preparedStatement.setString(3,userLogin.getPassword());
 
+            int rowAffected = preparedStatement.executeUpdate();
+            System.out.println(rowAffected);
+//            ResultSet rs = preparedStatement.executeQuery();
+//            while(rs.next())
+//            {
+//                System.out.print("ID: " + rs.getInt("id"));
+//                System.out.print("username: " + rs.getInt("age"));
+//                System.out.print("email: " + rs.getString("first"));
+//                System.out.println("password: " + rs.getString("last"));
+//            }
+//          rs.close();
+//
+//            if (a > 0) {
+//                System.out.println("Record Updated Successfully");
+//            } else {
+//                System.out.println("No Record Updated");
+//            }
 
+//            while(rs.next())
+//            {
+//                int id = rs.getInt("userID");
+//                String username = rs.getString("username");
+//                String email = rs.getString("email");
+//                String password = rs.getString("password");
 
-         } catch (Exception e) {
+            //               System.out.print("UserID" + userID);
+//                System.out.print(" username" + username);
+//                System.out.print(" email" + email);
+//                System.out.println(" password" +password);
+//            }
+            //rs.close();
+           // return "record updated successfully";
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-         return "record updates successfully";
+        return "Record Updated Successfully";
     }
 
-
-    //find by ID Command//
+    //find by ID Command//  #### ForPersonalRepository
 
     public static JSONObject findByID(@PathVariable int userID)throws SQLException {
         JSONObject jsonObject = new JSONObject();
@@ -183,23 +195,22 @@ public class TravellerRepository {
             while (rs.next()) {
                 JSONObject obj = new JSONObject();
                 obj.put("userid : " , rs.getInt("userid"));
-                obj.put("username: " , rs.getInt("username"));
-                obj.put("email  : " ,rs.getInt("email"));
-                obj.put("password : ", rs.getInt("password"));
+                obj.put("username: " , rs.getString("username"));
+                obj.put("email  : " ,rs.getString("email"));
+                obj.put("password : ", rs.getString("password"));
 
                 jsonArray.add(obj);
             }
             jsonObject.put("findByID",jsonArray);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Exception Occurred" +e);
         } finally {
             connection.close();
 
         }
-        return null;
+        return jsonObject;
     }
-
 
     public static JSONObject retrieveAllData()throws SQLException{
         JSONObject jsonObject = new JSONObject();
@@ -240,5 +251,54 @@ public class TravellerRepository {
         return jsonObject;
 
     }
+
+    public static JSONObject getInnerJoin()throws SQLException {
+        PersonalDetails personalDetails = new PersonalDetails();
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = Connectivity.CreateConnection();
+            String query = "select * from userLogin as u inner join personalDetails as p on u.userID = p.userID";
+            System.out.println("we are processing Data");
+            preparedStatement = connection.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+  System.out.println
+            while (rs.next()) {
+                JSONObject obj = new JSONObject();
+                obj.put("userid : ", rs.getInt("userid"));
+                obj.put("username : ", rs.getString("username"));
+                obj.put("email : ", rs.getString("email"));
+                obj.put("password : ", rs.getString("password"));
+                obj.put("UniqueID : ", rs.getString("uniqueID"));
+                obj.put("firstname",rs.getString("firstname"));
+                obj.put("lastname: ", rs.getString("Lastname"));
+                obj.put("userIdentity: ", rs.getString("userIdentity"));
+                obj.put("age: ", rs.getString("age"));
+                obj.put("source: ", rs.getString("source"));
+                obj.put("destination: ", rs.getString("destination"));
+                obj.put("fromDate: ", rs.getString("fromDate"));
+                obj.put("toDate: ", rs.getString("toDate"));
+                obj.put("charge: ", rs.getString("charge"));
+
+                jsonArray.add(obj);
+            }
+            jsonObject.put("innerJoin",jsonArray);
+        }catch(Exception e){
+            System.out.println("Exception occurred :"+e);
+        }
+        System.out.println(jsonObject);
+        return jsonObject;
+    }
+
+//    public List<Student> listStudents() {
+//        String SQL = "select * from Student";
+//        List <Student> students = jdbcTemplateObject.query(SQL, new StudentMapper());
+//        return students;
+//    }
+
+
 
 }

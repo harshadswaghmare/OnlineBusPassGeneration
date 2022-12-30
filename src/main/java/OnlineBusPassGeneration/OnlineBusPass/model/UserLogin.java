@@ -8,13 +8,16 @@ public class UserLogin {
 
     String cardType;
 
+    PersonalDetails personalDetails;
 
-    public UserLogin(int userid, String username, String password, String email,String cardType) {
+
+    public UserLogin(int userid, String username, String password, String email,String cardType,PersonalDetails personalDetails) {
         this.userid = userid;
         this.username = username;
         this.password = password;
         this.email = email;
         this.cardType = cardType;
+        this.personalDetails  = personalDetails;
     }
 
     public UserLogin() {

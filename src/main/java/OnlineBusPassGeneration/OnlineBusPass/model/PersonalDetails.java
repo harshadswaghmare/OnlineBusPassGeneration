@@ -15,10 +15,11 @@ public class PersonalDetails {
         String destination;
         String fromdate;
 //        Date todate;
-    int charge;
+    String charge;
+  //  String passType;
 
 
-    public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String source, String destination,String Date,int charge ) {
+    public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String source, String destination,String Date,String charge ) {
         this.personID = personID;
         this.userID = userID;
         this.firstname = firstname;
@@ -28,8 +29,9 @@ public class PersonalDetails {
         this.source = source;
         this.destination = destination;
         this.fromdate = fromdate;
-//        this.todate = todate;
+//      this.todate = todate;
         this.charge = charge;
+
 
     }
 
@@ -126,13 +128,21 @@ public class PersonalDetails {
         this.age = age;
     }
 
-    public int getCharge(int result) {
-        return charge;
+    public String getCharge(int charge) {
+        return this.charge;
     }
 
-    public void setCharge(int charge) {
+    public void setCharge() {
         this.charge = charge;
     }
+
+//    public String getPassType() {
+//        return passType;
+//    }
+//
+//    public void setPassType(String passType) {
+//        this.passType = passType;
+//    }
 
     @Override
     public String toString() {
