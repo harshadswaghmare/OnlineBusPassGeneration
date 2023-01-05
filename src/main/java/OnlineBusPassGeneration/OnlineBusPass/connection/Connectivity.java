@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Connectivity {
-    static Connection conn;
+    static Connection connection;
     public static Connection CreateConnection(){
         try {
             Class.forName("org.postgresql.Driver");
@@ -13,7 +13,7 @@ public class Connectivity {
             String user = "postgres";
             String pass = "ConfluxSYS247";
 
-            conn = DriverManager.getConnection(url,user,pass);
+            connection = DriverManager.getConnection(url,user,pass);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -21,7 +21,7 @@ public class Connectivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return conn;
+        return connection;
 
     }
 }
