@@ -1,74 +1,78 @@
 package OnlineBusPassGeneration.OnlineBusPass.controller;
 
-
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
 import OnlineBusPassGeneration.OnlineBusPass.repository.TravellerRepository;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 @RestController
 public class TravellerController {
 
 
-    /*@GetMapping("retrieveAll")
-    public static HashMap<String, Object> GetAllUserData() throws SQLException {
-        return (HashMap<String, Object>) TravellerRepository.retrieveAllData();
-    }*/
-
-    @PostMapping("insert")
+    //***************  Insert into userLogin  ******************
+    @PostMapping("insertIntoUserLogin")
     public String insertData(@RequestBody UserLogin userLogin) {
         return TravellerRepository.insert(userLogin);
     }
 
 
-    @DeleteMapping("Delete/{UserID}")
-    public boolean deleteUiser(@PathVariable int UserID) {
+    //***********  Delete from user Login  *****************
+    @DeleteMapping("deleteFromUserLogin/{UserID}")
+    public boolean deleteUser(@PathVariable int UserID) {
         // boolean result = false;
         boolean result = TravellerRepository.deleteFromUserLogin(UserID);
         return result;
     }
 
-    @GetMapping("findByID/{userID}")
-    public static HashMap<String, Object> oneUserData(@PathVariable int userID) throws SQLException {
-        return (HashMap<String, Object>) TravellerRepository.findByID(userID);
-    }
 
-    @GetMapping("selectAllFromUser")
+    // *************** Select User Records  ***************
+    @GetMapping("selectAllFromUserLogin")
     public static JSONObject getUserData() throws SQLException {
         return TravellerRepository.retrieveAllData();
     }
 
-    @GetMapping("getInnerJoin")
-    public static JSONObject dataFromInnerJoin() throws SQLException {
-        System.out.println("you are in a inner join");
-        return TravellerRepository.getInnerJoin();
-    }
 
-//    @PutMapping("update/{userID}")
-//    public static String updateDisplay(@PathVariable  int userID)throws  SQLException{
-//        //JSONObject userLogin = new JSONObject();
-////        //JSONObject userLogin = new JSONObject();
-////        userLogin = TravellerRepository.findByID(userID);
-////        System.out.println(userLogin);
-//
-//      return TravellerRepository.updateUserLogin(userID);
-//
-//        //return userLogin;
-//    }
 
-    @PutMapping("modify/{UserID}")
+    // ***************  Update User Login  ***************
+    @PutMapping("updateFromUserLogin/{UserID}")
     public String update(@PathVariable int UserID,@RequestBody UserLogin userLogin) throws SQLException {
      String result = TravellerRepository.updateUserLogin(UserID,userLogin);
      return result;
-
     }
-@GetMapping("findById/{userID}")
+
+
+    // ***************  Find PersonalDetails by UserID  ***************
+    @GetMapping("selectFromUserLoginByID/{userID}")
     public static JSONObject findUser(@PathVariable  int userID)throws  SQLException{
-        JSONObject jsonObject = new JSONObject();
+       JSONObject jsonObject = new JSONObject();
        jsonObject = TravellerRepository.findByID(userID);
        return jsonObject;
+    }
+
+
+    // ***************  join ov userLogin and personalDetails ***************
+    @GetMapping("innerJoin")
+    public static JSONObject dataFromInnerJoin() throws SQLException {
+        return TravellerRepository.getInnerJoin();
+    }
+
+
+    @GetMapping("selectFirstName/{fromdate}")
+    public static JSONObject findFirstName(@PathVariable Date fromdate)throws  SQLException{
+        JSONObject jsonObject;
+        jsonObject = TravellerRepository.selectUsingDate(fromdate);
+        return jsonObject;
+    }
+
+
+    @GetMapping("total/{fromdate}")
+    public static JSONObject TotalOfTheDay(@PathVariable Date fromdate)throws  SQLException{
+        JSONObject a = new JSONObject();
+        a = TravellerRepository.selectTotalOfDate(fromdate);
+        System.out.println(a);
+        return a;
     }
 
 }

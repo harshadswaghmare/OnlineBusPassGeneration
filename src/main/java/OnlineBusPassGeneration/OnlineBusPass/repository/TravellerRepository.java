@@ -5,115 +5,82 @@ import OnlineBusPassGeneration.OnlineBusPass.model.PersonalDetails;
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TravellerRepository {
+    public static Logger log = LoggerFactory.getLogger(TravellerRepository.class);
+    private static final String uniqueID = UUID.randomUUID().toString();
+    private static List<String> sourceList;
+    private static final  String mobileRegex = ("(0/91)?[7-9][0-9]{9}");
 
-    static String uniqueID = UUID.randomUUID().toString();
-
-   // static Logger log = (Logger) LoggerFactory.getLogger(OnlineBusPassApplication.class);
-   // private static final Logger log = (Logger) LoggerFactory.getLogger(OnlineBusPassApplication.class);
-    /*public static Map<String,Object>retrieveAllData()throws SQLException{
-        HashMap<String,Object>map = new HashMap<>();
-        List<Object>list = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        Connection connection = null;
-        trycca
-        {
-            connection= Connectivity.CreateConnection();
-            String query = "select * from UserLogin order by userid asc";
-            System.out.println("processing Data");
-            System.out.println(query);
-            preparedStatement = connection.prepareStatement(query);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-
-                System.out.println("userid : " + rs.getInt("userid"));
-                list.add (0,"userid : " +rs.getInt("userid"));
-
-                System.out.println("username : " + rs.getString("username"));
-                list.add(1,"username : " +rs.getString("username"));
-
-                System.out.println("password : " + rs.getString("password"));
-                list.add(2,"password : " +rs.getString("password"));
-
-                System.out.println("email : " + rs.getString("email"));
-                list.add(3,"email : " +rs.getString("email"));
-
-
-                System.out.println("_________________________________");
-            }
-            System.out.println(List.of(list));
-
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        finally {
-            connection.close();
-        }
-        System.out.println("thanks");
-        return map;
-
-    }*/
+    private static final String aadhaarRegex = "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$";
+    private static JSONObject object = new JSONObject();
 
 
 
     public static String insert(UserLogin userLogin) {
 
-        boolean flag = false;
-       // Pattern pattern = Pattern.compile("^$|^[\\w,]+$");
-        //  UserLogin obj = new UserLogin();
         try {
 
             Connection connection = Connectivity.CreateConnection();
             System.out.println("Connection established successfully");
-            String query = "insert into UserLogin(userName,email,password,uniqueID)values(?,?,?,?)";
+            String query = "insert into UserLogin(userName,email,password,uniqueID,mobileNo)values(?,?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userLogin.getUsername());
             preparedStatement.setString(2, userLogin.getEmail());
             preparedStatement.setString(3, userLogin.getPassword());
-            preparedStatement.setString(4,uniqueID);
-            System.out.println("Thanks for working");
+            preparedStatement.setString(4, uniqueID);
+            preparedStatement.setString(5,userLogin.getMobileNo());
 
-            //preparedStatement.setString(4, student.getAddress());
+            Pattern mobile = Pattern.compile(mobileRegex);
+            Matcher m1 = mobile.matcher(userLogin.getMobileNo());
+            boolean b1 = m1.matches();
+            if(b1){
+                log.info("mobile no is verified");
+            }else{
+                return "Enter valid mobile no";
+            }
+
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
-            preparedStatement=connection.prepareStatement("insert into paymentDetails(cardType)values(?)");
-            preparedStatement.setString(1,userLogin.getCardType());
+            preparedStatement = connection.prepareStatement("insert into paymentDetails(cardType)values(?)");
+            preparedStatement.setString(1, userLogin.getCardType());
             preparedStatement.executeUpdate();
+            log.info("record inserted successfully");
 
-            System.out.println("Finally Inserted");
-            flag = true;
         } catch (Exception e) {
-            System.out.println("exception occurred : "+e);
+            log.info("exception occurred : " + e);
         }
-        return "record Inserted Successfully";
+        return "record inserted successfully";
     }
 
+
+    //Delete User Record
     public static boolean deleteFromUserLogin(@PathVariable int UserID) {
         boolean flag = false;
         try {
             Connection connection = Connectivity.CreateConnection();
             String query = "Delete from userLogin where userID = ? ";
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, UserID);
             int a = preparedStatement.executeUpdate();
-            if(a>0)
-            {
-                System.out.println("successfully deleted");
+            if (a > 0) {
+                log.info("successfully deleted");
                 flag = true;
+            } else {
+                log.info("No record found with ID " + UserID);
             }
-            else {
-                System.out.println("No record found with ID "+UserID);
-            }
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,61 +89,31 @@ public class TravellerRepository {
     }
 
 
-
-    //for PersonalDetails
-    public static String  updateUserLogin(@PathVariable int userID, UserLogin userLogin) {
-        String query = "update userLogin set email = ?,username =?,password =? where userID ="+userID;
+    //Update user Data
+    public static String updateUserLogin(@PathVariable int userID, UserLogin userLogin) {
+        String query = "update userLogin set email = ?,username =?,password =?, mobileNo=? where userID =" + userID;
         try {
             Connection connection = Connectivity.CreateConnection();
-
             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userLogin.getEmail());
+            preparedStatement.setString(2, userLogin.getUsername());
+            preparedStatement.setString(3, userLogin.getPassword());
+            preparedStatement.setString(3, userLogin.getMobileNo());
 
-            preparedStatement.setString(1,userLogin.getEmail());
-            preparedStatement.setString(2,userLogin.getUsername());
-            preparedStatement.setString(3,userLogin.getPassword());
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println(rowsAffected);
 
-            int rowAffected = preparedStatement.executeUpdate();
-            System.out.println(rowAffected);
-//            ResultSet rs = preparedStatement.executeQuery();
-//            while(rs.next())
-//            {
-//                System.out.print("ID: " + rs.getInt("id"));
-//                System.out.print("username: " + rs.getInt("age"));
-//                System.out.print("email: " + rs.getString("first"));
-//                System.out.println("password: " + rs.getString("last"));
-//            }
-//          rs.close();
 //
-//            if (a > 0) {
-//                System.out.println("Record Updated Successfully");
-//            } else {
-//                System.out.println("No Record Updated");
-//            }
-
-//            while(rs.next())
-//            {
-//                int id = rs.getInt("userID");
-//                String username = rs.getString("username");
-//                String email = rs.getString("email");
-//                String password = rs.getString("password");
-
-            //               System.out.print("UserID" + userID);
-//                System.out.print(" username" + username);
-//                System.out.print(" email" + email);
-//                System.out.println(" password" +password);
-//            }
-            //rs.close();
-           // return "record updated successfully";
-
         } catch (Exception e) {
             e.printStackTrace();
+        
         }
-        return "Record Updated Successfully";
+        return "record updated successfully";
     }
 
-    //find by ID Command//  #### ForPersonalRepository
+    //find User by ID
 
-    public static JSONObject findByID(@PathVariable int userID)throws SQLException {
+    public static JSONObject findByID(@PathVariable int userID) throws SQLException {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         // PreparedStatement preparedStatement = null;
@@ -191,20 +128,25 @@ public class TravellerRepository {
 
             ResultSet rs = preparedStatement.executeQuery();
 
+            if (jsonObject.isEmpty()) {
+                log.info("No record found against userId : " + userID);
+            } else {
 
-            while (rs.next()) {
-                JSONObject obj = new JSONObject();
-                obj.put("userid : " , rs.getInt("userid"));
-                obj.put("username: " , rs.getString("username"));
-                obj.put("email  : " ,rs.getString("email"));
-                obj.put("password : ", rs.getString("password"));
+                while (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("userid : ", rs.getInt("userid"));
+                    obj.put("username: ", rs.getString("username"));
+                    obj.put("email  : ", rs.getString("email"));
+                    obj.put("password : ", rs.getString("password"));
+                    obj.put("mobileNo : ", rs.getString("mobileNo"));
 
-                jsonArray.add(obj);
+                    jsonArray.add(obj);
+                }
+                jsonObject.put("findByID", jsonArray);
             }
-            jsonObject.put("findByID",jsonArray);
 
         } catch (Exception e) {
-            System.out.println("Exception Occurred" +e);
+            log.info("Exception Occurred" + e);
         } finally {
             connection.close();
 
@@ -212,38 +154,41 @@ public class TravellerRepository {
         return jsonObject;
     }
 
-    public static JSONObject retrieveAllData()throws SQLException{
+
+    //Select User Data
+    public static JSONObject retrieveAllData() throws SQLException {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         PreparedStatement preparedStatement = null;
         Connection connection = null;
-        try
-        {
-            connection= Connectivity.CreateConnection();
+        try {
+            connection = Connectivity.CreateConnection();
             String query = "select * from UserLogin order by userid asc";
-            System.out.println("processing Data");
-            System.out.println(query);
+            log.debug("processing Data");
+            log.info(query);
             preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
 
+
             while (rs.next()) {
-            JSONObject obj = new JSONObject();
+                JSONObject obj = new JSONObject();
 
-            obj.put("userid : " ,rs.getInt("userid"));
-            obj.put("username : " , rs.getString("username"));
-            obj.put("email : " , rs.getString("email"));
-            obj.put("password : " ,rs.getString("password"));
-            obj.put("UniqueID : " ,rs.getString("uniqueID"));
+                obj.put("userid : ", rs.getInt("userid"));
+                obj.put("username : ", rs.getString("username"));
+                obj.put("email : ", rs.getString("email"));
+                obj.put("password : ", rs.getString("password"));
+                obj.put("UniqueID : ", rs.getString("uniqueID"));
+                obj.put("mobileNo : ", rs.getString("mobileNo"));
 
-            jsonArray.add(obj);
+
+                jsonArray.add(obj);
 
             }
-            jsonObject.put("User_Data",jsonArray);
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+            jsonObject.put("User_Data", jsonArray);
 
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
         finally {
             connection.close();
         }
@@ -252,7 +197,228 @@ public class TravellerRepository {
 
     }
 
-    public static JSONObject getInnerJoin()throws SQLException {
+
+    //****************   Insert PersonalDetails  *****************
+    public static String insertPersonal(PersonalDetails personalDetails) {
+
+        LocalDate date = LocalDate.now();
+        Date obj = Date.valueOf(LocalDate.now().plusDays(30));
+
+
+
+        try {
+            Connection connection = Connectivity.CreateConnection();
+            System.out.println("Connection established successfully");
+            String query = "insert into PersonalDetails(userID,firstname,lastname,userIdentity,age,source,destination,charge,fromDate,toDate)values(?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, personalDetails.getUserID());
+            preparedStatement.setString(2, personalDetails.getFirstname());
+            preparedStatement.setString(3, personalDetails.getLastname());
+            preparedStatement.setString(4, personalDetails.getUserIdentity());
+            preparedStatement.setInt(5, personalDetails.getAge());
+            preparedStatement.setString(6, personalDetails.getSource());
+            preparedStatement.setString(7, personalDetails.getDestination());
+
+
+            if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
+                    (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Bhumkar"))) {
+                int ticket = 15;
+                int charge = ticket * 2 * 22;
+                preparedStatement.setInt(8, charge);
+            } else if ((personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
+                    (personalDetails.getSource().contains("Shivaji Nagar") && personalDetails.getDestination().contains("Hinjwadi"))) {
+                int ticket = 30;
+                int charge = ticket * 2 * 22;
+                preparedStatement.setInt(8, charge);
+            } else if ((personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
+                    (personalDetails.getSource().contains("Dange Chowk") && personalDetails.getDestination().contains("Pashan"))) {
+                int ticket = 12;
+                int charge = ticket * 2 * 22;
+                preparedStatement.setInt(8, charge);
+            } else if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
+                    (personalDetails.getSource().contains("kothrud") && personalDetails.getDestination().contains("Bhumkar"))) {
+                int ticket = 15;
+                int charge = ticket * 2 * 22;
+                preparedStatement.setInt(8, charge);
+            } else if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
+                    (personalDetails.getSource().contains("Infosys Phase3") && personalDetails.getDestination().contains("Bhumkar"))) {
+                int ticket = 20;
+                int charge = ticket * 2 * 22;
+                preparedStatement.setInt(8, charge);
+            } else {
+                log.error("no source or destination found you selected");
+                return "please provide valid Source and Destination";
+            }
+
+            preparedStatement.setDate(9, Date.valueOf(date));
+            preparedStatement.setDate(10, obj);
+
+            Pattern p = Pattern.compile(aadhaarRegex);
+            Matcher m = p.matcher(personalDetails.getUserIdentity());
+            boolean b = m.matches();
+
+            if (b) {
+                log.info("your Aadhaar is verified");
+            } else {
+                return "Enter valid Aadhaar Number as  per Aadhaar Card";
+            }
+
+
+            preparedStatement.executeUpdate();
+            log.info("Finally Inserted");
+
+
+        } catch (Exception e) {
+            log.error("Exception Occurred : " + e);
+        }
+
+        return "record  inserted successfully";
+    }
+
+
+    //DELETE
+    public static boolean delete(@PathVariable int personalID) {
+        boolean flag = false;
+        try {
+            Connection connection = Connectivity.CreateConnection();
+            String query = "Delete from PersonalDetails where personalID = ? ";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, personalID);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                log.info("Record Deleted  Successfully");
+                flag = true;
+            } else {
+                log.info("No record found with ID " + personalID);
+            }
+
+        } catch (Exception e) {
+            log.error("Exception occurred : " + e);
+        }
+        return flag;
+
+    }
+
+
+    public static String updatePersonalDetails(@PathVariable int userID, PersonalDetails personalDetails) {
+        String query = "update personalDetails set firstname = ?, lastname =? where userID =" + userID;
+        try {
+            Connection connection = Connectivity.CreateConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, personalDetails.getFirstname());
+            preparedStatement.setString(2, personalDetails.getLastname());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                log.info("RowsAffected ", rowsAffected);
+                log.info("record updated successfully");
+            } else {
+                log.info("no record updated");
+            }
+//
+        } catch (Exception e) {
+            log.error("Error Occurred : " + e);
+        }
+        return "Record Updated Successfully";
+    }
+
+
+    //Select Personal Details Records
+    public static JSONObject retrieveAllDataFromPersonalDetails() throws SQLException {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        Connection connection = null;
+        try {
+            connection = Connectivity.CreateConnection();
+            String query = "select * from PersonalDetails";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (jsonObject.isEmpty()) {
+                log.info("no record found");
+            } else {
+                while (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("personalID ", rs.getInt("personalID"));
+                    obj.put("userID", rs.getInt("userID"));
+                    obj.put("firstname", rs.getString("firstname"));
+                    obj.put("lastname", rs.getString("lastname"));
+                    obj.put("userIdentity", rs.getString("userIdentity"));
+                    obj.put("age", rs.getInt("age"));
+                    obj.put("source", rs.getString("source"));
+                    obj.put("destination", rs.getString("destination"));
+                    obj.put("fromDate", rs.getString("fromDate"));
+                    obj.put("toDate", rs.getString("toDate"));
+                    obj.put("charge", rs.getString("charge"));
+
+                    jsonArray.add(obj);
+                }
+                jsonObject.put("Personal Details", jsonArray);
+            }
+        } catch (Exception e) {
+            log.error("exception occurred :" + e);
+        } finally {
+            connection.close();
+        }
+
+        return jsonObject;
+    }
+
+
+
+
+    //Find By ID From personalDetails
+
+    public static JSONObject findByIDPersonalDetails(@PathVariable int userID) throws SQLException {
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+        try {
+            connection = Connectivity.CreateConnection();
+            String query = "select * from PersonalDetails where userID = ?";
+            System.out.println("processing Data from database");
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, userID);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (jsonObject.isEmpty()) {
+                log.info("no record found");
+            } else {
+                while (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("personalID ", rs.getInt("personalID"));
+                    obj.put("userID", rs.getInt("userID"));
+                    obj.put("firstName", rs.getString("firstname"));
+                    obj.put("lastName", rs.getString("lastname"));
+                    obj.put("userIdentity", rs.getString("userIdentity"));
+                    obj.put("age", rs.getInt("age"));
+                    obj.put("source", rs.getString("source"));
+                    obj.put("destination", rs.getString("destination"));
+                    obj.put("fromDate", rs.getString("fromDate"));
+                    obj.put("toDate", rs.getString("toDate"));
+                    obj.put("charge", rs.getString("charge"));
+
+                    jsonArray.add(obj);
+                }
+                jsonObject.put("findByID", jsonArray);
+            }
+
+        } catch (Exception e) {
+            log.error("Exception Occurred" + e);
+        } finally {
+            connection.close();
+        }
+        return jsonObject;
+    }
+
+
+
+    //Inner join of UserLogin and PersonalDetails
+        public static JSONObject getInnerJoin() throws SQLException {
         PersonalDetails personalDetails = new PersonalDetails();
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -261,44 +427,147 @@ public class TravellerRepository {
 
         try {
             connection = Connectivity.CreateConnection();
-            String query = "select * from userLogin as u inner join personalDetails as p on u.userID = p.userID";
-            System.out.println("we are processing Data");
+            String query = "select p.*,u.username,u.email from personalDetails as p " +
+                            "inner join userLogin as u on u.userID = p.userID";
+            log.debug("we are processing Data");
             preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
-  System.out.println
-            while (rs.next()) {
-                JSONObject obj = new JSONObject();
-                obj.put("userid : ", rs.getInt("userid"));
-                obj.put("username : ", rs.getString("username"));
-                obj.put("email : ", rs.getString("email"));
-                obj.put("password : ", rs.getString("password"));
-                obj.put("UniqueID : ", rs.getString("uniqueID"));
-                obj.put("firstname",rs.getString("firstname"));
-                obj.put("lastname: ", rs.getString("Lastname"));
-                obj.put("userIdentity: ", rs.getString("userIdentity"));
-                obj.put("age: ", rs.getString("age"));
-                obj.put("source: ", rs.getString("source"));
-                obj.put("destination: ", rs.getString("destination"));
-                obj.put("fromDate: ", rs.getString("fromDate"));
-                obj.put("toDate: ", rs.getString("toDate"));
-                obj.put("charge: ", rs.getString("charge"));
 
-                jsonArray.add(obj);
+            if (jsonObject.isEmpty()) {
+                log.info("no record found..!");
+            } else {
+
+                while (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("userid : ", rs.getInt("userid"));
+                    obj.put("username : ", rs.getString("username"));
+                    obj.put("email : ", rs.getString("email"));
+                    obj.put("UniqueID : ", rs.getString("uniqueID"));
+                    obj.put("firstname", rs.getString("firstname"));
+                    obj.put("lastname: ", rs.getString("Lastname"));
+                    obj.put("userIdentity: ", rs.getString("userIdentity"));
+                    obj.put("age: ", rs.getString("age"));
+                    obj.put("source: ", rs.getString("source"));
+                    obj.put("destination: ", rs.getString("destination"));
+                    obj.put("fromDate: ", rs.getString("fromDate"));
+                    obj.put("toDate: ", rs.getString("toDate"));
+                    obj.put("charge: ", rs.getString("charge"));
+                }
+                jsonObject.put("innerJoin", jsonArray);
             }
-            jsonObject.put("innerJoin",jsonArray);
-        }catch(Exception e){
-            System.out.println("Exception occurred :"+e);
+        } catch (Exception e) {
+            log.error("Exception occurred :" + e);
         }
         System.out.println(jsonObject);
         return jsonObject;
     }
 
-//    public List<Student> listStudents() {
-//        String SQL = "select * from Student";
-//        List <Student> students = jdbcTemplateObject.query(SQL, new StudentMapper());
-//        return students;
-//    }
+
+
+    public static JSONObject sourceInsert(@PathVariable String source) {
+        object = new JSONObject();
+        sourceList = new ArrayList<>();
+        sourceList.add(source);
+        object.put("SourceList", sourceList);
+        return object;
+    }
+
+    public static JSONObject sourceDelete(@PathVariable String source) {
+        JSONObject object = new JSONObject();
+        object = new JSONObject();
+        if (sourceList.contains(source)) {
+            sourceList.remove(source);
+            log.info(source + " is permanently remove ");
+        } else {
+            log.info("no item were found against " + source);
+        }
+        object.put("SourceList", sourceList);
+        return object;
+    }
+
+    public static JSONObject display() {
+        return object;
+    }
+
+
+    //*****************  check record based on date  #LEFT JOIN  ***************
+    public static  JSONObject selectUsingDate(@PathVariable Date fromdate) throws SQLException {
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+
+        try {
+            connection = Connectivity.CreateConnection();
+            String query ="select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity," +
+                    "p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate =? ";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setDate(1,fromdate);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(!rs.next())
+            {
+                log.info("No Record Found");
+            }
+            else {
+                while (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("fromDate ", rs.getDate("fromDate"));
+                    obj.put("userID ", rs.getInt("userID"));
+                    obj.put("username", rs.getString("username"));
+                    obj.put("email", rs.getString("email"));
+                    ;
+                    obj.put("firstname", rs.getString("firstname"));
+                    obj.put("lastname", rs.getString("lastname"));
+                    obj.put("userIdentity", rs.getString("userIdentity"));
+                    obj.put("source", rs.getString("source"));
+                    obj.put("destination", rs.getString("destination"));
+                    obj.put("charge", rs.getString("charge"));
+
+
+                    jsonArray.add(obj);
+                }
+                jsonObject.put("leftJoin", jsonArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connection.close();
+        }
+
+        return jsonObject;
+    }
+
+
+    //****************  Total Rupees of the Day  ****************
+    public static JSONObject selectTotalOfDate(@PathVariable Date fromdate) throws SQLException {
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+        int sum = 0;
+
+        try {
+            connection = Connectivity.CreateConnection();
+            String query ="select sum(charge)from personalDetails where fromDate =?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setDate(1,fromdate);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next())
+            {
+                 int Total = rs.getInt(1);
+                 sum = sum +Total;
+                 log.info(String.valueOf(sum));
+            }
+        } catch (Exception e) {
+            log.warn("Exception Occurred : "+e);
+        } finally {
+            connection.close();
+        }
+        return jsonObject;
+    }
 
 
 
-}
+ }

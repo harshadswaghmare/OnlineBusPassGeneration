@@ -7,20 +7,30 @@ public class UserLogin {
     String email;
 
     String cardType;
+    String mobileNo;
 
     PersonalDetails personalDetails;
 
 
-    public UserLogin(int userid, String username, String password, String email,String cardType,PersonalDetails personalDetails) {
+    public UserLogin(int userid, String username, String password, String email,String cardType,String mobileNo,PersonalDetails personalDetails) {
         this.userid = userid;
         this.username = username;
         this.password = password;
         this.email = email;
         this.cardType = cardType;
+        this.mobileNo = mobileNo;
         this.personalDetails  = personalDetails;
     }
 
     public UserLogin() {
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
     }
 
     public int getUserid() {

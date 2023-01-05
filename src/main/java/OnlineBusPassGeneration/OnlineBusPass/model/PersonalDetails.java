@@ -39,7 +39,7 @@ public class PersonalDetails {
 
 	public PersonalDetails() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 //    public PersonalDetails(int userID, String firstname, String lastname, String userIdentity,int age, String source, String destination) {

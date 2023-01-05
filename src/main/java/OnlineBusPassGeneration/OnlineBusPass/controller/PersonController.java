@@ -2,7 +2,6 @@ package OnlineBusPassGeneration.OnlineBusPass.controller;
 
 import OnlineBusPassGeneration.OnlineBusPass.model.PersonalDetails;
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
-import OnlineBusPassGeneration.OnlineBusPass.repository.PersonalDetailsRepository;
 import OnlineBusPassGeneration.OnlineBusPass.repository.TravellerRepository;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -18,35 +17,74 @@ import java.util.Map;
 @RestController
 public class PersonController {
 
-    @GetMapping("retrieveAllFromPersonal")
+    //***************  select  PersonalData  ***************
+    @GetMapping("selectAllFromPersonalDetails")
     public static JSONObject GetAllUserData()throws SQLException {
-        return PersonalDetailsRepository.retrieveAllDataFromPersonalDetails();
+        return TravellerRepository.retrieveAllDataFromPersonalDetails();
     }
 
-    @PostMapping("insertData")
+
+
+    //***************  Insert Data Into PersonalDetails  ***************
+    @PostMapping("insertDataIntoPersonal")
     public String insertData(@RequestBody PersonalDetails personalDetails) throws SQLException {
-        return PersonalDetailsRepository.insert(personalDetails);
+        return TravellerRepository.insertPersonal(personalDetails);
     }
 
 
-    @DeleteMapping("DeletePersonal/{PersonalID}")
+    //***************  Delete From PersonalDetails  ***************
+    @DeleteMapping("deleteFromPersonalDetails/{PersonalID}")
     public boolean delete(@PathVariable int PersonalID) {
         // boolean result = false;
-        boolean result = PersonalDetailsRepository.delete(PersonalID);
+        boolean result = TravellerRepository.delete(PersonalID);
         return result;
     }
 
-    @PostMapping("/source/{source}")
 
-    public String result(@PathVariable String source){
-       List<String>list = Collections.singletonList(PersonalDetailsRepository.source(source));
-        return list.toString();
+    //***************  Insert into source List  ***************
+    @PostMapping("/insertIntoSource/{source}")
+    public JSONObject result(@PathVariable String source){
+       return TravellerRepository.sourceInsert(source);
     }
 
 
-    @PutMapping("/userLogin/{userID}")
-    public static HashMap<String,Object>updateStudent(@PathVariable("userID") int userID, @RequestBody UserLogin userLogin) throws SQLException {
+    //***************  Insert into source List  ***************
+    @DeleteMapping("/deleteFromSource/{source}")
+    public JSONObject delete(@PathVariable String source){
+        return TravellerRepository.sourceDelete(source);
+
+    }
+
+
+
+    //************* getList of source  ******************
+    @GetMapping("source")
+    public JSONObject display(){
+        return TravellerRepository.display();
+    }
+
+
+    //***************  Update from PersonalDetails  ***************
+    @PutMapping("updatePersonalDetails/{UserID}")
+    public String update(@PathVariable int UserID,@RequestBody PersonalDetails personalDetails) throws SQLException {
+        String result = TravellerRepository.updatePersonalDetails(UserID,personalDetails);
+        return result;
+    }
+
+
+
+
+   //***************  Search User Data  ***************
+    @GetMapping("/findByUserLogin/{userID}")
+    public static HashMap<String,Object>findByIDUserLogin(@PathVariable("userID") int userID, @RequestBody UserLogin userLogin) throws SQLException {
       return (HashMap<String, Object>) TravellerRepository.findByID(userID);
+    }
+
+
+    //***************  Search PersonalDetails Data  ***************
+    @GetMapping("/findByPersonalDetails/{userID}")
+    public static HashMap<String,Object>findByIDPersonalDetails(@PathVariable("userID") int userID, @RequestBody PersonalDetails personalDetails) throws SQLException {
+        return (HashMap<String, Object>) TravellerRepository.findByIDPersonalDetails(userID);
     }
 
 
