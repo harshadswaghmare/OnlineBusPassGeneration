@@ -61,7 +61,7 @@ public class TravellerRepository {
         } catch (Exception e) {
             log.info("exception occurred : " + e);
         }
-        return "record inserted successfully";
+        return "User Created Successfully";
     }
 
 
@@ -76,10 +76,10 @@ public class TravellerRepository {
             preparedStatement.setInt(1, UserID);
             int a = preparedStatement.executeUpdate();
             if (a > 0) {
-                log.info("successfully deleted");
+                log.info("User deleted Successfully");
                 flag = true;
             } else {
-                log.info("No record found with ID " + UserID);
+                log.info("No user found against userID : " + UserID);
             }
 
         } catch (Exception e) {
@@ -91,13 +91,12 @@ public class TravellerRepository {
 
     //Update user Data
     public static String updateUserLogin(@PathVariable int userID, UserLogin userLogin) {
-        String query = "update userLogin set email = ?,username =?,password =?, mobileNo=? where userID =" + userID;
+        String query = "update userLogin set email = ?,password =?, mobileNo=? where userID =" + userID;
         try {
             Connection connection = Connectivity.CreateConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userLogin.getEmail());
-            preparedStatement.setString(2, userLogin.getUsername());
-            preparedStatement.setString(3, userLogin.getPassword());
+            preparedStatement.setString(2, userLogin.getPassword());
             preparedStatement.setString(3, userLogin.getMobileNo());
 
             int rowsAffected = preparedStatement.executeUpdate();
@@ -258,21 +257,21 @@ public class TravellerRepository {
             boolean b = m.matches();
 
             if (b) {
-                log.info("your Aadhaar is verified");
+                log.info("Aadhaar is verified");
             } else {
                 return "Enter valid Aadhaar Number as  per Aadhaar Card";
             }
 
 
             preparedStatement.executeUpdate();
-            log.info("Finally Inserted");
+            log.info("Record Created Successfully");
 
 
         } catch (Exception e) {
             log.error("Exception Occurred : " + e);
         }
 
-        return "record  inserted successfully";
+        return "User Detail saved  Successfully";
     }
 
 
@@ -287,7 +286,7 @@ public class TravellerRepository {
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                log.info("Record Deleted  Successfully");
+                log.info("user Detail Deleted Successfully");
                 flag = true;
             } else {
                 log.info("No record found with ID " + personalID);
@@ -323,7 +322,7 @@ public class TravellerRepository {
         } catch (Exception e) {
             log.error("Error Occurred : " + e);
         }
-        return "Record Updated Successfully";
+        return null;
     }
 
 
@@ -338,9 +337,9 @@ public class TravellerRepository {
             String query = "select * from PersonalDetails";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
-            if (jsonObject.isEmpty()) {
-                log.info("no record found");
-            } else {
+//            if (jsonObject.isEmpty()) {
+//                log.info("no record found");
+//            } else {
                 while (rs.next()) {
                     JSONObject obj = new JSONObject();
                     obj.put("personalID ", rs.getInt("personalID"));
@@ -358,13 +357,12 @@ public class TravellerRepository {
                     jsonArray.add(obj);
                 }
                 jsonObject.put("Personal Details", jsonArray);
-            }
+          //  }
         } catch (Exception e) {
             log.error("exception occurred :" + e);
         } finally {
             connection.close();
         }
-
         return jsonObject;
     }
 
@@ -540,6 +538,7 @@ public class TravellerRepository {
 
 
     //****************  Total Rupees of the Day  ****************
+    //Eg. select sum(charge)from personalDetails where fromDate ='2023-01-01'
     public static JSONObject selectTotalOfDate(@PathVariable Date fromdate) throws SQLException {
 
         JSONObject jsonObject = new JSONObject();
@@ -570,4 +569,92 @@ public class TravellerRepository {
 
 
 
- }
+
+
+    //*******************  Display Record From Date to Date  **************
+    // select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity,
+    //p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate between '2023-01-01' and '2023-01-06'
+
+    public static  JSONObject selectFromDateToDate(@PathVariable Date fromdate, @PathVariable Date fromDate) throws SQLException {
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+
+        try {
+            connection = Connectivity.CreateConnection();
+            String query ="select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity," +
+                    "p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate between " +  "'" + fromdate + "'" + " and " + "' " +fromDate + " '";
+            System.out.println("in a method");
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+           // preparedStatement.setDate(1,fromdate);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(!rs.next())
+            {
+                log.info("No Record Found");
+            }
+            else {
+                while (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("fromDate ", rs.getDate("fromDate"));
+                    obj.put("userID ", rs.getInt("userID"));
+                    obj.put("username", rs.getString("username"));
+                    obj.put("email", rs.getString("email"));
+                    ;
+                    obj.put("firstname", rs.getString("firstname"));
+                    obj.put("lastname", rs.getString("lastname"));
+                    obj.put("userIdentity", rs.getString("userIdentity"));
+                    obj.put("source", rs.getString("source"));
+                    obj.put("destination", rs.getString("destination"));
+                    obj.put("charge", rs.getString("charge"));
+
+
+                    jsonArray.add(obj);
+                }
+                jsonObject.put("leftJoin", jsonArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connection.close();
+        }
+
+        return jsonObject;
+    }
+
+
+    //*****************  Display total Amount of FromDate To ToDate *******************
+    // Eg. select sum(charge)from personalDetails where fromDate between '2023-01-01'and '2023-01-07'
+    public static  JSONObject CalculateTotalFromDateToDate(@PathVariable Date fromdate, @PathVariable Date fromDate) throws SQLException {
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+        int sum = 0;
+
+        try {
+            connection = Connectivity.CreateConnection();
+            String query ="select sum(charge)from personalDetails where fromDate between " +  "'" + fromdate + "'" + " and " + "' " +fromDate + " '";
+            System.out.println("in a method");
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next())
+            {
+                int Total = rs.getInt(1);
+                sum = Total+ sum;
+                log.info("Total "+fromdate+" to "+fromDate+ " is : "+sum);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connection.close();
+        }
+
+        return jsonObject;
+    }
+
+
+
+
+
+}

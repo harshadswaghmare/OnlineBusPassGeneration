@@ -66,7 +66,7 @@ public class TravellerController {
         return jsonObject;
     }
 
-
+//********* calculate total amount of the day  ***********
     @GetMapping("total/{fromdate}")
     public static JSONObject TotalOfTheDay(@PathVariable Date fromdate)throws  SQLException{
         JSONObject a = new JSONObject();
@@ -74,6 +74,30 @@ public class TravellerController {
         System.out.println(a);
         return a;
     }
+
+
+
+    //****************  Display total Record  fromDate to toDate
+    @GetMapping("selectFromDateToDate/{fromdate}/{fromDate}")
+    public static JSONObject fromDateBetween(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
+        System.out.println("In a between method ");
+        JSONObject a = new JSONObject();
+        a = TravellerRepository.selectFromDateToDate(fromdate,fromDate);
+        System.out.println(a);
+        return a;
+    }
+
+    //************ Calculate total amount value fromDate to ToDate
+
+    @GetMapping("calculateTotalAmountFromDateToDate/{fromdate}/{fromDate}")
+    public static JSONObject calculateTotalAmountFromDateToDate(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
+        System.out.println("In a between method ");
+        JSONObject a = new JSONObject();
+        a = TravellerRepository.CalculateTotalFromDateToDate(fromdate,fromDate);
+        System.out.println(a);
+        return a;
+    }
+
 
 }
 
