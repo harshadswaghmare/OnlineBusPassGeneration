@@ -208,49 +208,112 @@ public class TravellerRepository {
         try {
             Connection connection = Connectivity.CreateConnection();
             System.out.println("Connection established successfully");
-            String query = "insert into PersonalDetails(userID,firstname,lastname,userIdentity,age,source,destination,charge,fromDate,toDate)values(?,?,?,?,?,?,?,?,?,?)";
+            String query = "insert into PersonalDetails(userID,firstname,lastname,userIdentity,age,profession,source,destination,charge,fromDate,toDate)values(?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, personalDetails.getUserID());
             preparedStatement.setString(2, personalDetails.getFirstname());
             preparedStatement.setString(3, personalDetails.getLastname());
             preparedStatement.setString(4, personalDetails.getUserIdentity());
             preparedStatement.setInt(5, personalDetails.getAge());
-            preparedStatement.setString(6, personalDetails.getSource());
-            preparedStatement.setString(7, personalDetails.getDestination());
+            preparedStatement.setString(6,personalDetails.getProfession());
+            preparedStatement.setString(7, personalDetails.getSource());
+            preparedStatement.setString(8, personalDetails.getDestination());
 
 
-            if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
+            if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
                     (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 15;
-                int charge = ticket * 2 * 22;
-                preparedStatement.setInt(8, charge);
-            } else if ((personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
                     (personalDetails.getSource().contains("Shivaji Nagar") && personalDetails.getDestination().contains("Hinjwadi"))) {
                 int ticket = 30;
-                int charge = ticket * 2 * 22;
-                preparedStatement.setInt(8, charge);
-            } else if ((personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
                     (personalDetails.getSource().contains("Dange Chowk") && personalDetails.getDestination().contains("Pashan"))) {
                 int ticket = 12;
-                int charge = ticket * 2 * 22;
-                preparedStatement.setInt(8, charge);
-            } else if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
                     (personalDetails.getSource().contains("kothrud") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 15;
-                int charge = ticket * 2 * 22;
-                preparedStatement.setInt(8, charge);
-            } else if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
                     (personalDetails.getSource().contains("Infosys Phase3") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 20;
-                int charge = ticket * 2 * 22;
-                preparedStatement.setInt(8, charge);
-            } else {
-                log.error("no source or destination found you selected");
-                return "please provide valid Source and Destination";
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            }
+            //
+            else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
+                    (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Bhumkar"))) {
+                int ticket = 15;
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
+                    (personalDetails.getSource().contains("Shivaji Nagar") && personalDetails.getDestination().contains("Hinjwadi"))) {
+                int ticket = 30;
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if (((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
+                    (personalDetails.getSource().contains("Dange Chowk") && personalDetails.getDestination().contains("Pashan")))) {
+                int ticket = 12;
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
+                    (personalDetails.getSource().contains("kothrud") && personalDetails.getDestination().contains("Bhumkar"))) {
+                int ticket = 15;
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
+            } else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
+                    (personalDetails.getSource().contains("Infosys Phase3") && personalDetails.getDestination().contains("Bhumkar"))) {
+                int ticket = 20;
+                int amount = (ticket*2*30);
+                int charge = (amount*35)/100;
+                preparedStatement.setInt(9, charge);
+
             }
 
-            preparedStatement.setDate(9, Date.valueOf(date));
-            preparedStatement.setDate(10, obj);
+            else {
+                if(personalDetails.getSource().isEmpty()){
+                    return "source is empty";
+                }
+                else if(personalDetails.getDestination().isEmpty()){
+                    return "destination is empty";
+                }
+                else if(personalDetails.getProfession().isEmpty()){
+                    return "profession is empty";
+                }
+                else{
+                    int charge = 1800;
+                    preparedStatement.setInt(9,charge);
+                }
+                //log.error("no source or destination found you selected");
+                //return "please provide valid Source and Destination";
+            }
+
+            preparedStatement.setDate(10, Date.valueOf(date));
+            preparedStatement.setDate(11, obj);
 
             Pattern p = Pattern.compile(aadhaarRegex);
             Matcher m = p.matcher(personalDetails.getUserIdentity());
@@ -348,6 +411,7 @@ public class TravellerRepository {
                     obj.put("lastname", rs.getString("lastname"));
                     obj.put("userIdentity", rs.getString("userIdentity"));
                     obj.put("age", rs.getInt("age"));
+                    obj.put("profession",rs.getString("profession"));
                     obj.put("source", rs.getString("source"));
                     obj.put("destination", rs.getString("destination"));
                     obj.put("fromDate", rs.getString("fromDate"));

@@ -11,6 +11,8 @@ public class PersonalDetails {
         String lastname;
         String userIdentity;
         int age;
+
+        String profession;
         String source;
         String destination;
         String fromdate;
@@ -19,13 +21,14 @@ public class PersonalDetails {
   //  String passType;
 
 
-    public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String source, String destination,String Date,String charge ) {
+    public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String profession,String source, String destination,String Date,String charge ) {
         this.personID = personID;
         this.userID = userID;
         this.firstname = firstname;
         this.lastname = lastname;
         this.userIdentity = userIdentity;
         this.age = age;
+        this.profession = profession;
         this.source = source;
         this.destination = destination;
         this.fromdate = fromdate;
@@ -56,6 +59,13 @@ public class PersonalDetails {
 //    }
 
 
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
 
     public int getUserID() {
         return userID;
