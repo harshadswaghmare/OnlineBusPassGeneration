@@ -2,7 +2,6 @@ package OnlineBusPassGeneration.OnlineBusPass.model;
 
 public class PersonalDetails {
 
-
         int personID;
 
         UserLogin  userLogin;
@@ -16,9 +15,9 @@ public class PersonalDetails {
         String source;
         String destination;
         String fromdate;
-//        Date todate;
-    String charge;
-  //  String passType;
+
+//      String todate;
+       String charge;
 
 
     public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String profession,String source, String destination,String Date,String charge ) {
@@ -32,46 +31,32 @@ public class PersonalDetails {
         this.source = source;
         this.destination = destination;
         this.fromdate = fromdate;
-//      this.todate = todate;
+        //this.todate = todate;
         this.charge = charge;
-
-
     }
 
-
-
-	public PersonalDetails() {
+    public PersonalDetails()
+    {
         super();
-
     }
 
-//    public PersonalDetails(int userID, String firstname, String lastname, String userIdentity,int age, String source, String destination) {
-//        this.userID = userID;
-//        this.firstname = firstname;
-//        this.lastname = lastname;
-//        this.userIdentity = userIdentity;
-//        this.age = age;
-//        this.source = source;
-//        this.destination = destination;
-//        this.fromdate = fromdate;
-//        //this.todate = todate;
-//
-//    }
-
-
-    public String getProfession() {
+    public String getProfession()
+    {
         return profession;
     }
 
-    public void setProfession(String profession) {
+    public void setProfession(String profession)
+    {
         this.profession = profession;
     }
 
-    public int getUserID() {
+    public int getUserID()
+    {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(int userID)
+    {
         this.userID = userID;
     }
 
@@ -79,15 +64,18 @@ public class PersonalDetails {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(String source)
+    {
         this.source = source;
     }
 
-    public String getDestination() {
+    public String getDestination()
+    {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(String destination)
+    {
         this.destination = destination;
     }
 
@@ -98,47 +86,49 @@ public class PersonalDetails {
     public void setFromdate(String  fromdate) {
         this.fromdate = fromdate;
     }
-//
-//    public Date getTodate() {
-//        return todate;
-//    }
-//
-//    public void setTodate(Date todate) {
-//        this.todate = todate;
-//    }
+
 
     public int getPersonID() {
         return personID;
     }
-        public void setPersonID(int personID) {
+
+    public void setPersonID(int personID) {
         this.personID = personID;
     }
-        public String getFirstname() {
+    public String getFirstname() {
         return firstname;
     }
-        public void setFirstname(String firstname) {
+
+    public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
-        public String getLastname() {
+    public String getLastname() {
         return lastname;
     }
-        public void setLastname(String lastname) {
+
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-        public String getUserIdentity() {
+    public String getUserIdentity() {
         return userIdentity;
     }
-        public void setUserIdentity(String userIdentity) {
+
+    public void setUserIdentity(String userIdentity)
+    {
         this.userIdentity = userIdentity;
     }
-        public int getAge() {
+    public int getAge()
+    {
         return age;
     }
-        public void setAge(int age) {
+
+    public void setAge(int age)
+    {
         this.age = age;
     }
 
-    public String getCharge(int charge) {
+    public String getCharge(int charge)
+    {
         return this.charge;
     }
 
@@ -146,13 +136,6 @@ public class PersonalDetails {
         this.charge = charge;
     }
 
-//    public String getPassType() {
-//        return passType;
-//    }
-//
-//    public void setPassType(String passType) {
-//        this.passType = passType;
-//    }
 
     @Override
     public String toString() {

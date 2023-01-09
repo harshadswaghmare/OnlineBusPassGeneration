@@ -17,15 +17,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TravellerRepository {
-    public static Logger log = LoggerFactory.getLogger(TravellerRepository.class);
     private static final String uniqueID = UUID.randomUUID().toString();
-    private static List<String> sourceList;
-    private static final  String mobileRegex = ("(0/91)?[7-9][0-9]{9}");
-
+    private static final String mobileRegex = ("(0/91)?[7-9][0-9]{9}");
     private static final String aadhaarRegex = "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$";
+    private static final String email = "^[a-z0-9._]+@(.+)$";
+    private static final String password = "^(?=.*[0-9])"  //at least one digit should be
+            + "(?=.*[a-z])(?=.*[A-Z])"      // at least one lowercase and uppercase should be there
+            + "(?=.*[@#$%^&+=])"            //at least one character should be
+            + "(?=\\S+$).{8,20}$";         // Minimum and maximum Length
+    public static Logger log = LoggerFactory.getLogger(TravellerRepository.class);
+    private static List<String> sourceList;
     private static JSONObject object = new JSONObject();
-
-
 
     public static String insert(UserLogin userLogin) {
 
@@ -39,20 +41,32 @@ public class TravellerRepository {
             preparedStatement.setString(2, userLogin.getEmail());
             preparedStatement.setString(3, userLogin.getPassword());
             preparedStatement.setString(4, uniqueID);
-            preparedStatement.setString(5,userLogin.getMobileNo());
+            preparedStatement.setString(5, userLogin.getMobileNo());
 
-            Pattern mobile = Pattern.compile(mobileRegex);
+            if (Pattern.matches(email, userLogin.getEmail())) {  //Email Validation
+                log.info(null);
+            } else {
+                return "enter correct emailID";
+            }
+
+            if (Pattern.matches(password, userLogin.getPassword())) {  //password validation
+                log.info(null);
+            } else {
+                return "password should have at least one uppercase letter,one lowercase letter one character" +
+                        "and length should be between 8 - 20";
+            }
+
+            Pattern mobile = Pattern.compile(mobileRegex);    //mobileNo Validation
             Matcher m1 = mobile.matcher(userLogin.getMobileNo());
             boolean b1 = m1.matches();
-            if(b1){
+            if (b1) {
                 log.info("mobile no is verified");
-            }else{
+            } else {
                 return "Enter valid mobile no";
             }
 
             preparedStatement.executeUpdate();
             preparedStatement.close();
-
             preparedStatement = connection.prepareStatement("insert into paymentDetails(cardType)values(?)");
             preparedStatement.setString(1, userLogin.getCardType());
             preparedStatement.executeUpdate();
@@ -98,14 +112,11 @@ public class TravellerRepository {
             preparedStatement.setString(1, userLogin.getEmail());
             preparedStatement.setString(2, userLogin.getPassword());
             preparedStatement.setString(3, userLogin.getMobileNo());
-
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(rowsAffected);
 
-//
         } catch (Exception e) {
             e.printStackTrace();
-        
         }
         return "record updated successfully";
     }
@@ -148,11 +159,9 @@ public class TravellerRepository {
             log.info("Exception Occurred" + e);
         } finally {
             connection.close();
-
         }
         return jsonObject;
     }
-
 
     //Select User Data
     public static JSONObject retrieveAllData() throws SQLException {
@@ -168,7 +177,6 @@ public class TravellerRepository {
             preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
 
-
             while (rs.next()) {
                 JSONObject obj = new JSONObject();
 
@@ -179,16 +187,13 @@ public class TravellerRepository {
                 obj.put("UniqueID : ", rs.getString("uniqueID"));
                 obj.put("mobileNo : ", rs.getString("mobileNo"));
 
-
                 jsonArray.add(obj);
-
             }
             jsonObject.put("User_Data", jsonArray);
 
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
-        finally {
+        } finally {
             connection.close();
         }
         System.out.println(jsonObject);
@@ -203,8 +208,6 @@ public class TravellerRepository {
         LocalDate date = LocalDate.now();
         Date obj = Date.valueOf(LocalDate.now().plusDays(30));
 
-
-
         try {
             Connection connection = Connectivity.CreateConnection();
             System.out.println("Connection established successfully");
@@ -215,98 +218,92 @@ public class TravellerRepository {
             preparedStatement.setString(3, personalDetails.getLastname());
             preparedStatement.setString(4, personalDetails.getUserIdentity());
             preparedStatement.setInt(5, personalDetails.getAge());
-            preparedStatement.setString(6,personalDetails.getProfession());
+            preparedStatement.setString(6, personalDetails.getProfession());
             preparedStatement.setString(7, personalDetails.getSource());
             preparedStatement.setString(8, personalDetails.getDestination());
 
-
-            if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
+            if ((personalDetails.getProfession().contains("Student")) && (personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
                     (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 15;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 35) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
+            } else if ((personalDetails.getProfession().contains("Student")) && (personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
                     (personalDetails.getSource().contains("Shivaji Nagar") && personalDetails.getDestination().contains("Hinjwadi"))) {
                 int ticket = 30;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 35) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
+            } else if ((personalDetails.getProfession().contains("Student")) && (personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
                     (personalDetails.getSource().contains("Dange Chowk") && personalDetails.getDestination().contains("Pashan"))) {
                 int ticket = 12;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 35) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
+            } else if ((personalDetails.getProfession().contains("Student")) && (personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
                     (personalDetails.getSource().contains("kothrud") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 15;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 35) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Student"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
+            } else if ((personalDetails.getProfession().contains("Student")) && (personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
                     (personalDetails.getSource().contains("Infosys Phase3") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 20;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 40) / 100;
                 preparedStatement.setInt(9, charge);
 
             }
             //
-            else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
+            else if ((personalDetails.getProfession().contains("Senior Citizen")) && (personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
                     (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 15;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 40) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
+            } else if ((personalDetails.getProfession().contains("Senior Citizen")) && (personalDetails.getSource().contains("Hinjwadi") && personalDetails.getDestination().contains("Shivaji Nagar")) ||
                     (personalDetails.getSource().contains("Shivaji Nagar") && personalDetails.getDestination().contains("Hinjwadi"))) {
                 int ticket = 30;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 40) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if (((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
+            } else if (((personalDetails.getProfession().contains("Senior Citizen")) && (personalDetails.getSource().contains("Pashan") && personalDetails.getDestination().contains("Dange Chowk")) ||
                     (personalDetails.getSource().contains("Dange Chowk") && personalDetails.getDestination().contains("Pashan")))) {
                 int ticket = 12;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 40) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
+            } else if ((personalDetails.getProfession().contains("Senior Citizen")) && (personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("kothrud")) ||
                     (personalDetails.getSource().contains("kothrud") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 15;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 40) / 100;
                 preparedStatement.setInt(9, charge);
 
-            } else if ((personalDetails.getProfession().contains("Senior Citizen"))&&(personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
+            } else if ((personalDetails.getProfession().contains("Senior Citizen")) && (personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Infosys Phase3")) ||
                     (personalDetails.getSource().contains("Infosys Phase3") && personalDetails.getDestination().contains("Bhumkar"))) {
                 int ticket = 20;
-                int amount = (ticket*2*30);
-                int charge = (amount*35)/100;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 40) / 100;
                 preparedStatement.setInt(9, charge);
 
-            }
-
-            else {
-                if(personalDetails.getSource().isEmpty()){
+            } else {
+                if (personalDetails.getSource().isEmpty()) {
                     return "source is empty";
-                }
-                else if(personalDetails.getDestination().isEmpty()){
+                } else if (personalDetails.getDestination().isEmpty()) {
                     return "destination is empty";
-                }
-                else if(personalDetails.getProfession().isEmpty()){
+                } else if (personalDetails.getProfession().isEmpty()) {
                     return "profession is empty";
-                }
-                else{
+                } else {
                     int charge = 1800;
-                    preparedStatement.setInt(9,charge);
+                    preparedStatement.setInt(9, charge);
                 }
                 //log.error("no source or destination found you selected");
                 //return "please provide valid Source and Destination";
@@ -325,10 +322,8 @@ public class TravellerRepository {
                 return "Enter valid Aadhaar Number as  per Aadhaar Card";
             }
 
-
             preparedStatement.executeUpdate();
             log.info("Record Created Successfully");
-
 
         } catch (Exception e) {
             log.error("Exception Occurred : " + e);
@@ -367,21 +362,17 @@ public class TravellerRepository {
         String query = "update personalDetails set firstname = ?, lastname =? where userID =" + userID;
         try {
             Connection connection = Connectivity.CreateConnection();
-
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-
             preparedStatement.setString(1, personalDetails.getFirstname());
             preparedStatement.setString(2, personalDetails.getLastname());
-
             int rowsAffected = preparedStatement.executeUpdate();
-
             if (rowsAffected > 0) {
                 log.info("RowsAffected ", rowsAffected);
                 log.info("record updated successfully");
             } else {
                 log.info("no record updated");
             }
-//
+
         } catch (Exception e) {
             log.error("Error Occurred : " + e);
         }
@@ -400,28 +391,26 @@ public class TravellerRepository {
             String query = "select * from PersonalDetails";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
-//            if (jsonObject.isEmpty()) {
-//                log.info("no record found");
-//            } else {
-                while (rs.next()) {
-                    JSONObject obj = new JSONObject();
-                    obj.put("personalID ", rs.getInt("personalID"));
-                    obj.put("userID", rs.getInt("userID"));
-                    obj.put("firstname", rs.getString("firstname"));
-                    obj.put("lastname", rs.getString("lastname"));
-                    obj.put("userIdentity", rs.getString("userIdentity"));
-                    obj.put("age", rs.getInt("age"));
-                    obj.put("profession",rs.getString("profession"));
-                    obj.put("source", rs.getString("source"));
-                    obj.put("destination", rs.getString("destination"));
-                    obj.put("fromDate", rs.getString("fromDate"));
-                    obj.put("toDate", rs.getString("toDate"));
-                    obj.put("charge", rs.getString("charge"));
 
-                    jsonArray.add(obj);
-                }
-                jsonObject.put("Personal Details", jsonArray);
-          //  }
+            while (rs.next()) {
+                JSONObject obj = new JSONObject();
+                obj.put("personalID ", rs.getInt("personalID"));
+                obj.put("userID", rs.getInt("userID"));
+                obj.put("firstname", rs.getString("firstname"));
+                obj.put("lastname", rs.getString("lastname"));
+                obj.put("userIdentity", rs.getString("userIdentity"));
+                obj.put("age", rs.getInt("age"));
+                obj.put("profession", rs.getString("profession"));
+                obj.put("source", rs.getString("source"));
+                obj.put("destination", rs.getString("destination"));
+                obj.put("fromDate", rs.getString("fromDate"));
+                obj.put("toDate", rs.getString("toDate"));
+                obj.put("charge", rs.getString("charge"));
+
+                jsonArray.add(obj);
+            }
+            jsonObject.put("Personal Details", jsonArray);
+            //  }
         } catch (Exception e) {
             log.error("exception occurred :" + e);
         } finally {
@@ -429,8 +418,6 @@ public class TravellerRepository {
         }
         return jsonObject;
     }
-
-
 
 
     //Find By ID From personalDetails
@@ -477,10 +464,8 @@ public class TravellerRepository {
         return jsonObject;
     }
 
-
-
     //Inner join of UserLogin and PersonalDetails
-        public static JSONObject getInnerJoin() throws SQLException {
+    public static JSONObject getInnerJoin() throws SQLException {
         PersonalDetails personalDetails = new PersonalDetails();
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -489,14 +474,12 @@ public class TravellerRepository {
 
         try {
             connection = Connectivity.CreateConnection();
-            String query = "select p.*,u.username,u.email from personalDetails as p " +
-                            "inner join userLogin as u on u.userID = p.userID";
+            String query = "select p.*,u.username,u.email from personalDetails as p inner join userLogin as u on u.userID = p.userID";
             log.debug("we are processing Data");
             preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
-
-            if (jsonObject.isEmpty()) {
-                log.info("no record found..!");
+            if (!rs.next()) {
+                log.info("No Record Found");
             } else {
 
                 while (rs.next()) {
@@ -504,19 +487,24 @@ public class TravellerRepository {
                     obj.put("userid : ", rs.getInt("userid"));
                     obj.put("username : ", rs.getString("username"));
                     obj.put("email : ", rs.getString("email"));
-                    obj.put("UniqueID : ", rs.getString("uniqueID"));
+                    //obj.put("UniqueID : ", rs.getString("uniqueID"));
                     obj.put("firstname", rs.getString("firstname"));
                     obj.put("lastname: ", rs.getString("Lastname"));
                     obj.put("userIdentity: ", rs.getString("userIdentity"));
                     obj.put("age: ", rs.getString("age"));
+                    obj.put("profession", rs.getString("profession"));
                     obj.put("source: ", rs.getString("source"));
                     obj.put("destination: ", rs.getString("destination"));
                     obj.put("fromDate: ", rs.getString("fromDate"));
                     obj.put("toDate: ", rs.getString("toDate"));
                     obj.put("charge: ", rs.getString("charge"));
+
+
+                    jsonArray.add(obj);
                 }
-                jsonObject.put("innerJoin", jsonArray);
+                jsonObject.put("inner join", jsonArray);
             }
+
         } catch (Exception e) {
             log.error("Exception occurred :" + e);
         }
@@ -524,8 +512,7 @@ public class TravellerRepository {
         return jsonObject;
     }
 
-
-
+    //******************  insert source value  ****************
     public static JSONObject sourceInsert(@PathVariable String source) {
         object = new JSONObject();
         sourceList = new ArrayList<>();
@@ -534,6 +521,7 @@ public class TravellerRepository {
         return object;
     }
 
+    //***************  Insert Destination Value  *************
     public static JSONObject sourceDelete(@PathVariable String source) {
         JSONObject object = new JSONObject();
         object = new JSONObject();
@@ -547,13 +535,10 @@ public class TravellerRepository {
         return object;
     }
 
-    public static JSONObject display() {
-        return object;
-    }
 
 
     //*****************  check record based on date  #LEFT JOIN  ***************
-    public static  JSONObject selectUsingDate(@PathVariable Date fromdate) throws SQLException {
+    public static JSONObject selectUsingDate(@PathVariable Date fromdate) throws SQLException {
 
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -561,17 +546,15 @@ public class TravellerRepository {
 
         try {
             connection = Connectivity.CreateConnection();
-            String query ="select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity," +
+            String query = "select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity," +
                     "p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate =? ";
 
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setDate(1,fromdate);
+            preparedStatement.setDate(1, fromdate);
             ResultSet rs = preparedStatement.executeQuery();
-            if(!rs.next())
-            {
+            if (!rs.next()) {
                 log.info("No Record Found");
-            }
-            else {
+            } else {
                 while (rs.next()) {
                     JSONObject obj = new JSONObject();
                     obj.put("fromDate ", rs.getDate("fromDate"));
@@ -612,19 +595,18 @@ public class TravellerRepository {
 
         try {
             connection = Connectivity.CreateConnection();
-            String query ="select sum(charge)from personalDetails where fromDate =?";
+            String query = "select sum(charge)from personalDetails where fromDate =?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setDate(1,fromdate);
+            preparedStatement.setDate(1, fromdate);
             ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next())
-            {
-                 int Total = rs.getInt(1);
-                 sum = sum +Total;
-                 log.info(String.valueOf(sum));
+            while (rs.next()) {
+                int Total = rs.getInt(1);
+                sum = sum + Total;
+                log.info(String.valueOf(sum));
             }
         } catch (Exception e) {
-            log.warn("Exception Occurred : "+e);
+            log.warn("Exception Occurred : " + e);
         } finally {
             connection.close();
         }
@@ -632,14 +614,11 @@ public class TravellerRepository {
     }
 
 
-
-
-
     //*******************  Display Record From Date to Date  **************
     // select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity,
     //p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate between '2023-01-01' and '2023-01-06'
 
-    public static  JSONObject selectFromDateToDate(@PathVariable Date fromdate, @PathVariable Date fromDate) throws SQLException {
+    public static JSONObject selectFromDateToDate(@PathVariable Date fromdate, @PathVariable Date fromDate) throws SQLException {
 
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -647,24 +626,21 @@ public class TravellerRepository {
 
         try {
             connection = Connectivity.CreateConnection();
-            String query ="select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity," +
-                    "p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate between " +  "'" + fromdate + "'" + " and " + "' " +fromDate + " '";
+            String query = "select u.username,u.email,p.userID,p.charge,p.fromDate,p.firstname,p.lastname,p.userIdentity," +
+                    "p.source,p.destination from personalDetails as p left join userLogin as u on u.userID= p.userID where fromDate between " + "'" + fromdate + "'" + " and " + "' " + fromDate + " '";
             System.out.println("in a method");
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-           // preparedStatement.setDate(1,fromdate);
+            // preparedStatement.setDate(1,fromdate);
             ResultSet rs = preparedStatement.executeQuery();
-            if(!rs.next())
-            {
+            if (!rs.next()) {
                 log.info("No Record Found");
-            }
-            else {
+            } else {
                 while (rs.next()) {
                     JSONObject obj = new JSONObject();
                     obj.put("fromDate ", rs.getDate("fromDate"));
                     obj.put("userID ", rs.getInt("userID"));
                     obj.put("username", rs.getString("username"));
                     obj.put("email", rs.getString("email"));
-                    ;
                     obj.put("firstname", rs.getString("firstname"));
                     obj.put("lastname", rs.getString("lastname"));
                     obj.put("userIdentity", rs.getString("userIdentity"));
@@ -689,7 +665,7 @@ public class TravellerRepository {
 
     //*****************  Display total Amount of FromDate To ToDate *******************
     // Eg. select sum(charge)from personalDetails where fromDate between '2023-01-01'and '2023-01-07'
-    public static  JSONObject CalculateTotalFromDateToDate(@PathVariable Date fromdate, @PathVariable Date fromDate) throws SQLException {
+    public static JSONObject CalculateTotalFromDateToDate(@PathVariable Date fromdate, @PathVariable Date fromDate) throws SQLException {
 
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -698,15 +674,14 @@ public class TravellerRepository {
 
         try {
             connection = Connectivity.CreateConnection();
-            String query ="select sum(charge)from personalDetails where fromDate between " +  "'" + fromdate + "'" + " and " + "' " +fromDate + " '";
+            String query = "select sum(charge)from personalDetails where fromDate between " + "'" + fromdate + "'" + " and " + "' " + fromDate + " '";
             System.out.println("in a method");
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next())
-            {
+            while (rs.next()) {
                 int Total = rs.getInt(1);
-                sum = Total+ sum;
-                log.info("Total "+fromdate+" to "+fromDate+ " is : "+sum);
+                sum = Total + sum;
+                log.info("Total " + fromdate + " to " + fromDate + " is : " + sum);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -716,9 +691,5 @@ public class TravellerRepository {
 
         return jsonObject;
     }
-
-
-
-
 
 }
