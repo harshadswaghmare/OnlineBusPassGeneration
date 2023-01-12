@@ -1,7 +1,8 @@
 package OnlineBusPassGeneration.OnlineBusPass.model;
 
-public class PersonalDetails {
+import java.sql.Date;
 
+public class PersonalDetails {
         int personID;
 
         UserLogin  userLogin;
@@ -10,14 +11,14 @@ public class PersonalDetails {
         String lastname;
         String userIdentity;
         int age;
-
         String profession;
         String source;
         String destination;
         String fromdate;
+        String charge;
 
-//      String todate;
-       String charge;
+        String todate;
+
 
 
     public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String profession,String source, String destination,String Date,String charge ) {
@@ -31,7 +32,7 @@ public class PersonalDetails {
         this.source = source;
         this.destination = destination;
         this.fromdate = fromdate;
-        //this.todate = todate;
+        this.todate = todate;
         this.charge = charge;
     }
 
@@ -48,6 +49,14 @@ public class PersonalDetails {
     public void setProfession(String profession)
     {
         this.profession = profession;
+    }
+
+    public String getTodate() {
+        return todate;
+    }
+
+    public void setTodate(String todate) {
+        this.todate = todate;
     }
 
     public int getUserID()

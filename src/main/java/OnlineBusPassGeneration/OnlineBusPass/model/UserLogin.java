@@ -5,10 +5,8 @@ public class UserLogin {
     String username;
     String password;
     String email;
-
     String cardType;
     String mobileNo;
-
     PersonalDetails personalDetails;
 
 

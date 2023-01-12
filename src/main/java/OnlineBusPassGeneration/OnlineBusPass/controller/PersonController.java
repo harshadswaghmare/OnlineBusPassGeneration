@@ -24,10 +24,9 @@ public class PersonController {
     }
 
 
-
     //***************  Insert Data Into PersonalDetails  ***************
     @PostMapping("insertDataIntoPersonal")
-    public String insertData(@RequestBody PersonalDetails personalDetails) throws SQLException {
+    public String insertData( @RequestBody PersonalDetails personalDetails) throws SQLException {
         return TravellerRepository.insertPersonal(personalDetails);
     }
 
@@ -58,10 +57,6 @@ public class PersonController {
 
 
     //************* getList of source  ******************
-    @GetMapping("source")
-    public JSONObject display(){
-        return TravellerRepository.display();
-    }
 
 
     //***************  Update from PersonalDetails  ***************
@@ -72,9 +67,7 @@ public class PersonController {
     }
 
 
-
-
-   //***************  Search User Data  ***************
+    //***************  Search User Data  ***************
     @GetMapping("/findByUserLogin/{userID}")
     public static HashMap<String,Object>findByIDUserLogin(@PathVariable("userID") int userID, @RequestBody UserLogin userLogin) throws SQLException {
       return (HashMap<String, Object>) TravellerRepository.findByID(userID);
@@ -85,6 +78,13 @@ public class PersonController {
     @GetMapping("/findByPersonalDetails/{userID}")
     public static HashMap<String,Object>findByIDPersonalDetails(@PathVariable("userID") int userID, @RequestBody PersonalDetails personalDetails) throws SQLException {
         return (HashMap<String, Object>) TravellerRepository.findByIDPersonalDetails(userID);
+    }
+
+    // ***************  Update User Login  ***************
+    @PutMapping("updateInsert/{personalID}")
+    public String updateInsert(@PathVariable int personalID,@RequestBody PersonalDetails personalDetails) throws SQLException {
+        String result = TravellerRepository.updateInsertPersonalDetails(personalID,personalDetails);
+        return result;
     }
 
 
