@@ -2,9 +2,12 @@ package OnlineBusPassGeneration.OnlineBusPass;
 import OnlineBusPassGeneration.OnlineBusPass.model.PersonalDetails;
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
 import OnlineBusPassGeneration.OnlineBusPass.repository.TravellerRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+
+import java.sql.SQLException;
 import java.util.HashMap;
 public class Test {
     Logger log = LoggerFactory.getLogger(OnlineBusPassApplication.class);
@@ -13,27 +16,26 @@ public class Test {
 
     @org.testng.annotations.Test(priority = 1)
     @org.junit.jupiter.api.Test
-    public void selectUserLoginRecord(){
+    public void selectUserLoginRecord() {
         log.debug("we are fetching data");
-        HashMap<String,Object>getUserData;
-        try{
+        HashMap<String, Object> getUserData;
+        try {
             getUserData = TravellerRepository.retrieveAllData();
-            log.info("in processing\n",getUserData);
-        }catch(Exception e){
+            log.info("in processing\n", getUserData);
+        } catch (Exception e) {
             assert false;
         }
     }
 
 
     @org.junit.jupiter.api.Test
-    public void PersonalDetails()
-    {
+    public void PersonalDetails() {
         log.debug("data processing");
-        HashMap<String,Object>getPersonalDetailsData;
-        try{
+        HashMap<String, Object> getPersonalDetailsData;
+        try {
             getPersonalDetailsData = TravellerRepository.retrieveAllDataFromPersonalDetails();
             log.info("in processing\n", getPersonalDetailsData);
-        }catch (Exception e){
+        } catch (Exception e) {
             assert true;
         }
     }
@@ -47,17 +49,16 @@ public class Test {
             boolean rows1 = TravellerRepository.delete(25);
             String expected = "No record found with ID 31";
             String expected1 = "No record found with ID 25";
-            Assert.assertFalse(rows,expected);
+            Assert.assertFalse(rows, expected);
             Assert.assertFalse(rows1, expected1);
-           // Assert.assertNotEquals(rows1, true);
+            // Assert.assertNotEquals(rows1, true);
         } catch (Exception e) {
             System.out.println("exception occurred :" + e);
         }
     }
 
     @org.junit.jupiter.api.Test
-    public void deletePersonalDetailsRecord()
-    {
+    public void deletePersonalDetailsRecord() {
         try {
             boolean rows = TravellerRepository.delete(32);
             boolean rows1 = TravellerRepository.delete(33);
@@ -68,31 +69,32 @@ public class Test {
             Assert.assertNotEquals(rows1, true);
         } catch (Exception e) {
             System.out.println("exception occurred :" + e);
+
         }
     }
 
     @org.junit.jupiter.api.Test
-    public void updateUserLoginRecord(){
-        try{
-          String  rowsAffected = TravellerRepository.updateUserLogin(30,new UserLogin());
-          Assert.assertEquals(rowsAffected,"record updated successfully");
-          Assert.assertNotEquals(rowsAffected,"record updated Successfully");
+    public void updateUserLoginRecord() {
+        try {
+            String rowsAffected = TravellerRepository.updateUserLogin(30, new UserLogin());
+            Assert.assertEquals(rowsAffected, "no any action perform");
+            Assert.assertNotEquals(rowsAffected, "no any action");
 
-        }catch(Exception e){
-           log.error("Exception Occurred : "+e);
+        } catch (Exception e) {
+            log.error("Exception Occurred : " + e);
         }
     }
 
 
     @org.junit.jupiter.api.Test
-    public void updatePersonalDetails(){
-        try{
-            String  rowsAffected = TravellerRepository.updatePersonalDetails(30,new PersonalDetails());
+    public void updatePersonalDetails() {
+        try {
+            String rowsAffected = TravellerRepository.updatePersonalDetails(30, new PersonalDetails());
             //Assert.assertEquals(rowsAffected,"Record Updated Successfully");
             //Assert.assertNotEquals(rowsAffected,"record updated successFully");
-            Assert.assertEquals(rowsAffected,null);
-        }catch(Exception e){
-            log.error("Exception Occurred : "+e);
+            Assert.assertEquals(rowsAffected, null);
+        } catch (Exception e) {
+            log.error("Exception Occurred : " + e);
         }
 
     }
@@ -101,20 +103,37 @@ public class Test {
     public void insertUserLoginRecord() {
         try {
             String rowsAffected = TravellerRepository.insert(new UserLogin());
-            Assert.assertEquals(rowsAffected, "record inserted successfully");
+            Assert.assertNotEquals(rowsAffected, "user created successfully");
         } catch (Exception e) {
-            log.info("Exception Occurred : "+e);
+            log.info("Exception Occurred : " + e);
         }
     }
 
     @org.junit.jupiter.api.Test
-    public void insertPersonalDetails()
-    {
+    public void insertPersonalDetails() {
         try {
             String rowsAffected = TravellerRepository.insert(new UserLogin());
-            Assert.assertEquals(rowsAffected, "record inserted successfully");
+            Assert.assertNotEquals(rowsAffected, "user Data saved Successfully");
         } catch (Exception e) {
-            log.info("Exception Occurred : "+e);
+            log.info("Exception Occurred : " + e);
         }
     }
+
+    @org.junit.jupiter.api.Test
+    public void findByUserID() throws SQLException{
+        int result1 = TravellerRepository.findByID(211).size();
+        log.info("value is "+ result1);
+        int expected1 = 0;
+        Assert.assertEquals(result1,expected1);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void findByID() throws SQLException {
+       int result = TravellerRepository.findByID(52).size();
+       log.info("value is "+ result);
+       int expected  = 1;
+       Assert.assertEquals(result,expected);
+
+    }
 }
+

@@ -1,11 +1,13 @@
 package OnlineBusPassGeneration.OnlineBusPass.controller;
 
 import OnlineBusPassGeneration.OnlineBusPass.model.PaymentModule;
+import OnlineBusPassGeneration.OnlineBusPass.model.PersonalDetails;
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
 import OnlineBusPassGeneration.OnlineBusPass.repository.TravellerRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.json.simple.JSONObject;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 
 @RestController
 public class PaymentController {
@@ -15,4 +17,11 @@ public class PaymentController {
         return TravellerRepository.insertPaymentModule(paymentModule);
     }
 
+    // ***************  Find PersonalDetails by UserID  ***************
+    @GetMapping("selectAllFromPaymentDetailsForPass/{personId}")
+    public static JSONObject findUser(@PathVariable int personId, PersonalDetails personalDetails)throws SQLException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject = TravellerRepository.passGeneration(personId);
+        return jsonObject;
+    }
 }

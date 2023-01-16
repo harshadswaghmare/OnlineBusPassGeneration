@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -24,11 +23,11 @@ public class TravellerRepository {
     private static final String uniqueID = UUID.randomUUID().toString();
     private static final String mobileRegex = ("(0/91)?[7-9][0-9]{9}");
     private static final String aadhaarRegex = "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$";
-    private static final String email = "^[a-z0-9._]+@(.+)$";
     private static final String password = "^(?=.*[0-9])"  //at least one digit should be
             + "(?=.*[a-z])(?=.*[A-Z])"      // at least one lowercase and uppercase should be there
             + "(?=.*[@#$%^&+=])"            //at least one character should be
             + "(?=\\S+$).{8,20}$";         // Minimum and maximum Length
+    private static final String email = "^[a-z0-9._]+@(.+)$";
     public static Logger log = LoggerFactory.getLogger(TravellerRepository.class);
     private static List<String> sourceList;
     private static JSONObject object = new JSONObject();
@@ -180,15 +179,22 @@ public class TravellerRepository {
 
                 jsonArray.add(obj);
             }
-            jsonObject.put("findByID", jsonArray);
-
+             jsonObject.put("pass",jsonArray);
+            if(jsonObject.isEmpty())
+            {
+                log.info("no data found");
+            }else{
+                System.out.println(jsonObject);
+                return jsonObject;
+            }
 
         } catch (Exception e) {
             log.info("Exception Occurred" + e);
         } finally {
             connection.close();
         }
-        return jsonObject;
+         //return jsonObject;
+      return jsonObject;
     }
 
     //Select User Data
@@ -378,7 +384,6 @@ public class TravellerRepository {
         } catch (Exception e) {
             log.error("Exception Occurred : " + e);
         }
-
         return null;
     }
 
@@ -467,13 +472,12 @@ public class TravellerRepository {
             connection.close();
         }
         return jsonObject;
-    }
 
+    }
 
     //Find By ID From personalDetails
 
     public static JSONObject findByIDPersonalDetails(@PathVariable int userID) throws SQLException {
-
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         Connection connection = null;
@@ -503,7 +507,6 @@ public class TravellerRepository {
             }
             jsonObject.put("findByID", jsonArray);
 
-
         } catch (Exception e) {
             log.error("Exception Occurred" + e);
         } finally {
@@ -532,20 +535,20 @@ public class TravellerRepository {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 JSONObject obj = new JSONObject();
-                obj.put("userid : ", rs.getInt("userid"));
-                obj.put("username : ", rs.getString("username"));
-                obj.put("email : ", rs.getString("email"));
+                obj.put("userid", rs.getInt("userid"));
+                obj.put("username", rs.getString("username"));
+                obj.put("email", rs.getString("email"));
                 //obj.put("UniqueID : ", rs.getString("uniqueID"));
                 obj.put("firstname", rs.getString("firstname"));
-                obj.put("lastname: ", rs.getString("Lastname"));
-                obj.put("userIdentity: ", rs.getString("userIdentity"));
-                obj.put("age: ", rs.getString("age"));
+                obj.put("lastname", rs.getString("lastname"));
+                obj.put("userIdentity", rs.getString("userIdentity"));
+                obj.put("age", rs.getString("age"));
                 obj.put("profession", rs.getString("profession"));
-                obj.put("source: ", rs.getString("source"));
-                obj.put("destination: ", rs.getString("destination"));
-                obj.put("fromDate: ", rs.getString("fromDate"));
-                obj.put("toDate: ", rs.getString("toDate"));
-                obj.put("charge: ", rs.getString("charge"));
+                obj.put("source", rs.getString("source"));
+                obj.put("destination", rs.getString("destination"));
+                obj.put("fromDate", rs.getString("fromDate"));
+                obj.put("toDate", rs.getString("toDate"));
+                obj.put("charge", rs.getString("charge"));
 
 
                 jsonArray.add(obj);
@@ -640,7 +643,6 @@ public class TravellerRepository {
                     obj.put("destination", rs.getString("destination"));
                     obj.put("charge", rs.getString("charge"));
 
-
                     jsonArray.add(obj);
                 }
                 jsonObject.put("leftJoin", jsonArray);
@@ -650,7 +652,6 @@ public class TravellerRepository {
         } finally {
             connection.close();
         }
-
         return jsonObject;
     }
 
@@ -778,61 +779,82 @@ public class TravellerRepository {
 
     public static String updateInsertPersonalDetails(@RequestBody int personalID, PersonalDetails personalDetails) {
         LocalDate date = LocalDate.now();
-        String date1 = LocalDate.now().toString();
-        YearMonth ym = YearMonth.of(date.getYear(), date.getMonth());
-//        itn a = Integer.parseInt(ym.toStrign());
         PreparedStatement preparedStatement = null;
         Connection connection = null;
         try {
 
+            //  if (personalDetails.getTodate().contains(date1)) {
+            connection = Connectivity.CreateConnection();
+            String Query = "update PersonalDetails  set source =?, destination=?, charge =? where personalID =?";
+            preparedStatement = connection.prepareStatement(Query);
+            preparedStatement.setString(1, personalDetails.getSource());
+            preparedStatement.setString(2, personalDetails.getDestination());
+            if ((personalDetails.getSource().contains("Dange") && personalDetails.getDestination().contains("Baner")) ||
+                    (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Dange"))) {
+                int ticket = 50;
+                int amount = (ticket * 2 * 30);
+                int charge = (amount * 35) / 100;
+                preparedStatement.setInt(3, charge);
 
-              //  if (personalDetails.getTodate().contains(date1)) {
-                    connection = Connectivity.CreateConnection();
-                    String Query = "update PersonalDetails  set source =?, destination=?, charge =? where personalID =?";
-                    preparedStatement = connection.prepareStatement(Query);
-                    preparedStatement.setString(1, personalDetails.getSource());
-                    preparedStatement.setString(2, personalDetails.getDestination());
-                    if ((personalDetails.getSource().contains("Dange") && personalDetails.getDestination().contains("Baner")) ||
-                            (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Dange"))) {
-                        int ticket = 20;
-                        int amount = (ticket * 2 * 30);
-                        int charge = (amount * 35) / 100;
-                        preparedStatement.setInt(3, charge);
-
-                    }
-                    preparedStatement.setInt(4, personalDetails.getPersonID());
+            }
+            preparedStatement.setInt(4, personalDetails.getPersonID());
 
 
-                    int rowsAffected = preparedStatement.executeUpdate();
-                    if (rowsAffected > 0) {
-                     return"pass renewed successfully";
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                return "pass renewed successfully";
+            } else {
+                return "server not responding please try after some time";
+            }
 
-//                System.out.println("Connection established successfully");
-//                String query = "insert into personalDetails(charge)values(?)";
-//                preparedStatement = connection.prepareStatement(query);
-//                if ((personalDetails.getSource().contains("Bhumkar") && personalDetails.getDestination().contains("Baner")) ||
-//                        (personalDetails.getSource().contains("Baner") && personalDetails.getDestination().contains("Bhumkar"))) {
-//                    int ticket = 10;
-//                    int amount = (ticket * 2 * 30);
-//                    int charge = (amount * 35) / 100;
-//                    preparedStatement.setInt(1, charge);
-//
-//                }
-//                int rowAffected = preparedStatement.executeUpdate();
-//                if (rowAffected > 0) {
-//                    return "Passed renewed successfully.please make payment";
-//                } else {
-//                   return" passed not renewed";
-//                }
-                    } else {
-                        return "please try again after sometime";
-                    }
-//                } else {
-//                    return "renewed date is " + personalDetails.getTodate();
-//                }
 
         } catch (Exception e) {
             log.info("exception occurred : " + e);
+        }
+        return null;
+    }
+
+
+    // ****************************  get pass Details using inner join and left join  ****************************//
+    public static JSONObject passGeneration(@PathVariable int personID) {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+
+            connection = Connectivity.CreateConnection();
+            log.info("connection established successfully");
+            String query = "select p.firstname,p.lastname,p.personalID,u.mobileNo,p.source,p.destination,p.fromdate,p.todate,p.charge from personalDetails as p inner join userLogin as u on u.userid = p.userid left join paymentDetails as pd on p.personalID = pd.personalID where p.personalId =?";
+            preparedStatement = connection.prepareStatement(query);
+            log.info("hear we are processing out your pass");
+            preparedStatement.setInt(1, personID);
+            //preparedStatement.setInt(2,);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+                JSONObject obj = new JSONObject();
+                obj.put("personalID",rs.getInt("personalID"));
+                obj.put("firstname", rs.getString("firstname"));
+                obj.put("LastName", rs.getString("lastname"));
+                obj.put("Source", rs.getString("source"));
+                obj.put("Destination", rs.getString("destination"));
+                obj.put("FromDate", rs.getString("fromdate"));
+                obj.put("ToDate",rs.getString("todate"));
+                obj.put("Charge Paid",rs.getInt("charge"));
+                obj.put("Mobile Number",rs.getString("mobileNo"));
+                jsonArray.add(obj);
+
+            }
+                jsonObject.put("pass", jsonArray);
+                log.info("pass Renewed Successfully");
+                if(!jsonObject.isEmpty()){
+                    return jsonObject;
+                }else{
+                 log.info("No data found against "+personID);
+                }
+        } catch (Exception e) {
+            log.info("Exception occurred " + e);
         }
         return null;
     }

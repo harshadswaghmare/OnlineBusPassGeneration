@@ -14,9 +14,10 @@ public class PaymentModule
     String nameOnCard;
     String transactionID;
 
-    PaymentModule paymentModule;
+    PersonalDetails personalDetails;
+    UserLogin userLogin;
 
-    public PaymentModule(int payID, int userID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID, PaymentModule paymentModule) {
+    public PaymentModule(int payID, int userID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID, PersonalDetails personDetails,UserLogin userLogin) {
         this.payID = payID;
         this.userID = userID;
         this.cardType = cardType;
@@ -25,7 +26,8 @@ public class PaymentModule
         this.cvv = cvv;
         this.nameOnCard = nameOnCard;
         this.transactionID = transactionID;
-        this.paymentModule = paymentModule;
+        this.personalDetails = personDetails;
+        this.userLogin = userLogin;
     }
     public PaymentModule ()
     {
