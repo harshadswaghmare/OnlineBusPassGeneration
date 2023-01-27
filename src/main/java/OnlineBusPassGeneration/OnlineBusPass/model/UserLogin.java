@@ -5,19 +5,25 @@ public class UserLogin {
     String username;
     String password;
     String email;
-    String cardType;
     String mobileNo;
-    PersonalDetails personalDetails;
 
+    String firstname;
+    String lastname;
+    String userIdentity;
+    int age;
+    String profession;
 
-    public UserLogin(int userid, String username, String password, String email,String cardType,String mobileNo,PersonalDetails personalDetails) {
+    public UserLogin(int userid, String username, String password, String email, String mobileNo, String firstname, String lastname, String userIdentity, int age, String profession) {
         this.userid = userid;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.cardType = cardType;
         this.mobileNo = mobileNo;
-        this.personalDetails  = personalDetails;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.userIdentity = userIdentity;
+        this.age = age;
+        this.profession = profession;
     }
 
     public UserLogin() {
@@ -63,13 +69,53 @@ public class UserLogin {
         this.email = email;
     }
 
-    public String getCardType() {
-        return cardType;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setCardType(String cardType) {
-        this.cardType = cardType;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getUserIdentity() {
+        return userIdentity;
+    }
+
+    public void setUserIdentity(String userIdentity) {
+        this.userIdentity = userIdentity;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+    //    public String getCardType() {
+//        return cardType;
+//    }
+//
+//    public void setCardType(String cardType) {
+//        this.cardType = cardType;
+//    }
+
 
     @Override
     public String toString() {
@@ -78,7 +124,12 @@ public class UserLogin {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", cardType='" + cardType + '\'' +
+                ", mobileNo='" + mobileNo + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", userIdentity='" + userIdentity + '\'' +
+                ", age=" + age +
+                ", profession='" + profession + '\'' +
                 '}';
     }
 }

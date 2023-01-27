@@ -1,0 +1,248 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PaymentModule</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.model</a>
+</div>
+
+<h1>Coverage Summary for Class: PaymentModule (OnlineBusPassGeneration.OnlineBusPass.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PaymentModule</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.model;
+&nbsp;
+&nbsp;public class PaymentModule
+&nbsp;{
+&nbsp;    int payID;
+&nbsp;    int userID;
+&nbsp;    String cardType;
+&nbsp;    String cardNo;
+&nbsp;    String cardExpiry;
+&nbsp;    int cvv;
+&nbsp;    String nameOnCard;
+&nbsp;    String transactionID;
+&nbsp;    int charge;
+&nbsp;
+&nbsp;    int personalID;
+&nbsp;
+&nbsp;    //*******newly added
+&nbsp;
+&nbsp;    String fromdate;
+&nbsp;    String todate;
+&nbsp;    String status;
+&nbsp;    //************
+&nbsp;    OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel passAPIModel;
+&nbsp;    UserLogin userLogin;
+&nbsp;
+<b class="nc">&nbsp;    public PaymentModule(int payID, int userID, int personalID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID,PassAPIModel passAPIModel, UserLogin userLogin, int charge, String fromdate, String todate, String status) {</b>
+<b class="nc">&nbsp;        this.payID = payID;</b>
+<b class="nc">&nbsp;        this.userID = userID;</b>
+<b class="nc">&nbsp;        this.personalID = personalID;</b>
+<b class="nc">&nbsp;        this.cardType = cardType;</b>
+<b class="nc">&nbsp;        this.cardNo = cardNo;</b>
+<b class="nc">&nbsp;        this.cardExpiry = cardExpiry;</b>
+<b class="nc">&nbsp;        this.cvv = cvv;</b>
+<b class="nc">&nbsp;        this.nameOnCard = nameOnCard;</b>
+<b class="nc">&nbsp;        this.transactionID = transactionID;</b>
+<b class="nc">&nbsp;        this.passAPIModel = passAPIModel;</b>
+<b class="nc">&nbsp;        this.userLogin = userLogin;</b>
+<b class="nc">&nbsp;        this.charge = charge;</b>
+<b class="nc">&nbsp;        this.fromdate = fromdate;</b>
+<b class="nc">&nbsp;        this.todate = todate;</b>
+<b class="nc">&nbsp;        this.status = status;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;    public PaymentModule ()
+<b class="nc">&nbsp;    {</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFromdate() {
+<b class="nc">&nbsp;        return fromdate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFromdate(String fromdate) {
+<b class="nc">&nbsp;        this.fromdate = fromdate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getTodate() {
+<b class="nc">&nbsp;        return todate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTodate(String todate) {
+<b class="nc">&nbsp;        this.todate = todate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getCharge(int charge) {
+<b class="nc">&nbsp;        return this.charge;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCharge(int charge) {
+<b class="nc">&nbsp;        this.charge = charge;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getPersonalID() {
+<b class="nc">&nbsp;        return personalID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPersonalID(int personalID) {
+<b class="nc">&nbsp;        this.personalID = personalID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getPayID() {
+<b class="nc">&nbsp;        return payID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPayID(int payID) {
+<b class="nc">&nbsp;        this.payID = payID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getUserID() {
+<b class="nc">&nbsp;        return userID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUserID(int userID) {
+<b class="nc">&nbsp;        this.userID = userID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCardType() {
+<b class="nc">&nbsp;        return cardType;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCardType(String cardType) {
+<b class="nc">&nbsp;        this.cardType = cardType;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCardNo() {
+<b class="nc">&nbsp;        return cardNo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCardNo(String cardNo) {
+<b class="nc">&nbsp;        this.cardNo = cardNo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getCardExpiry() {
+<b class="nc">&nbsp;        return cardExpiry;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCardExpiry(String cardExpiry) {
+<b class="nc">&nbsp;        this.cardExpiry = cardExpiry;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getCvv() {
+<b class="nc">&nbsp;        return cvv;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCvv(int cvv) {
+<b class="nc">&nbsp;        this.cvv = cvv;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getNameOnCard() {
+<b class="nc">&nbsp;        return nameOnCard;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNameOnCard(String nameOnCard) {
+<b class="nc">&nbsp;        this.nameOnCard = nameOnCard;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getTransactionID() {
+<b class="nc">&nbsp;        return transactionID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTransactionID(String transactionID) {
+<b class="nc">&nbsp;        this.transactionID = transactionID;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-24 11:24</div>
+</div>
+</body>
+</html>

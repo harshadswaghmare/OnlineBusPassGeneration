@@ -1,0 +1,386 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PassAPIRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: PassAPIRepository (OnlineBusPassGeneration.OnlineBusPass.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PassAPIRepository</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25.9%
+  </span>
+  <span class="absValue">
+    (49/189)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.repository;
+&nbsp;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.OnlineBusPassApplication;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.connection.Connectivity;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel;
+&nbsp;import org.apache.coyote.Response;
+&nbsp;import org.json.simple.JSONArray;
+&nbsp;import org.json.simple.JSONObject;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;
+&nbsp;import java.sql.*;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.HashMap;
+&nbsp;
+<b class="nc">&nbsp;public class PassAPIRepository {</b>
+&nbsp;
+<b class="fc">&nbsp;   static Connection connection = null;</b>
+<b class="fc">&nbsp;   static PreparedStatement preparedStatement = null;</b>
+<b class="fc">&nbsp;   static Logger log = LoggerFactory.getLogger(OnlineBusPassApplication.class);</b>
+&nbsp;
+&nbsp;
+&nbsp;    //Select Personal Details Records
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; retrieveAllDataFromPersonalDetails() throws SQLException {
+<b class="fc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="fc">&nbsp;        JSONArray jsonArray = new JSONArray();</b>
+&nbsp;
+<b class="fc">&nbsp;        Connection connection = null;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String query = &quot;select * from PersonalDetails&quot;;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;            while(rs.next()) {</b>
+<b class="fc">&nbsp;                JSONObject obj = new JSONObject();</b>
+<b class="fc">&nbsp;                obj.put(&quot;personalID &quot;, rs.getInt(&quot;passID&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;userID&quot;, rs.getInt(&quot;userID&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;profession&quot;, rs.getString(&quot;profession&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;source&quot;, rs.getString(&quot;source&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;destination&quot;, rs.getString(&quot;destination&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;fromDate&quot;, rs.getString(&quot;fromDate&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;toDate&quot;, rs.getString(&quot;toDate&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;charge&quot;, rs.getString(&quot;charge&quot;));</b>
+<b class="fc">&nbsp;                jsonArray.add(obj);</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;             jsonObject.put(&quot;Personal Details&quot;, jsonArray);</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;exception occurred :&quot; + e);</b>
+&nbsp;        } finally {
+<b class="fc">&nbsp;            connection.close();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        System.out.println(jsonObject);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(jsonObject);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    //****************   Insert PersonalDetails  *****************
+&nbsp;    public static String insertPersonal(PassAPIModel passAPIModel) {
+&nbsp;
+<b class="fc">&nbsp;        LocalDate date = LocalDate.now();</b>
+<b class="fc">&nbsp;        Date obj = Date.valueOf(LocalDate.now().plusDays(30));</b>
+&nbsp;        // UserLogin userLogin = new UserLogin();
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            log.info(&quot;Connection established successfully&quot;);</b>
+<b class="fc">&nbsp;            String preQuery = &quot;select * from userLogin where userId = ?&quot;;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(preQuery);</b>
+<b class="fc">&nbsp;            preparedStatement.setInt(1, passAPIModel.getUserID());</b>
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;            if (rs.next()) {</b>
+<b class="nc">&nbsp;                    String query = &quot;insert into PersonalDetails(userID,profession,source,destination,charge,fromDate,toDate,status)values(?,?,?,?,?,?,?,?)&quot;;</b>
+<b class="nc">&nbsp;                    preparedStatement = connection.prepareStatement(query);</b>
+<b class="nc">&nbsp;                    preparedStatement.setInt(1, passAPIModel.getUserID());</b>
+<b class="nc">&nbsp;                    preparedStatement.setString(2, passAPIModel.getProfession());</b>
+<b class="nc">&nbsp;                    preparedStatement.setString(3, passAPIModel.getSource());</b>
+<b class="nc">&nbsp;                    preparedStatement.setString(4, passAPIModel.getDestination());</b>
+<b class="nc">&nbsp;                    if ((passAPIModel.getProfession().contains(&quot;Student&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Baner&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Baner&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 15;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Student&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Hinjwadi&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Shivaji Nagar&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Shivaji Nagar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Hinjwadi&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 30;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Student&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Pashan&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Dange Chowk&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Dange Chowk&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Pashan&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 12;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Student&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;kothrud&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;kothrud&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 15;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Student&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Infosys Phase3&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Infosys Phase3&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 20;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 40) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    }</b>
+&nbsp;                    //
+<b class="nc">&nbsp;                    else if ((passAPIModel.getProfession().contains(&quot;Senior Citizen&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Baner&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Baner&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 15;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 40) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Senior Citizen&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Hinjwadi&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Shivaji Nagar&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Shivaji Nagar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Hinjwadi&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 30;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 40) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if (((passAPIModel.getProfession().contains(&quot;Senior Citizen&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Pashan&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Dange Chowk&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Dange Chowk&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Pashan&quot;)))) {</b>
+<b class="nc">&nbsp;                        int ticket = 12;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 40) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Senior Citizen&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;kothrud&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;kothrud&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 15;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 40) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else if ((passAPIModel.getProfession().contains(&quot;Senior Citizen&quot;)) &amp;&amp; (passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Infosys Phase3&quot;)) ||</b>
+<b class="nc">&nbsp;                            (passAPIModel.getSource().contains(&quot;Infosys Phase3&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                        int ticket = 20;</b>
+<b class="nc">&nbsp;                        int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                        int charge = (amount * 40) / 100;</b>
+<b class="nc">&nbsp;                        preparedStatement.setInt(5, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                    } else {</b>
+<b class="nc">&nbsp;                        if (passAPIModel.getSource().isEmpty()) {</b>
+<b class="nc">&nbsp;                            return &quot;enter source&quot;;</b>
+<b class="nc">&nbsp;                        } else if (passAPIModel.getDestination().isEmpty()) {</b>
+<b class="nc">&nbsp;                            return &quot;enter destination&quot;;</b>
+<b class="nc">&nbsp;                        } else if (passAPIModel.getProfession().isEmpty()) {</b>
+<b class="nc">&nbsp;                            return &quot;enter profession&quot;;</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            int charge = 2000;</b>
+<b class="nc">&nbsp;                            preparedStatement.setInt(5, charge);</b>
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;
+<b class="nc">&nbsp;                    preparedStatement.setDate(6, Date.valueOf(date));</b>
+<b class="nc">&nbsp;                    preparedStatement.setDate(7, obj);</b>
+&nbsp;
+<b class="nc">&nbsp;                    preparedStatement.setString(8,&quot;Pending&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                    int rowsAffected = preparedStatement.executeUpdate();</b>
+<b class="nc">&nbsp;                    if (rowsAffected &gt; 0) {</b>
+<b class="nc">&nbsp;                        log.info(&quot;user Data saved Successfully&quot;);</b>
+<b class="nc">&nbsp;                        return &quot;user details submit successfully&quot;;</b>
+&nbsp;                    }
+&nbsp;
+<b class="nc">&nbsp;                } else {</b>
+&nbsp;                    //log.info(passAPIModel.getUserID() + &quot; not exist&quot;);
+<b class="fc">&nbsp;                    return passAPIModel.getUserID()+&quot; not exist&quot;;</b>
+&nbsp;                }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Exception Occurred : &quot; + e);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public static ResponseEntity&lt;String&gt; update(@RequestBody int passID, PassAPIModel passAPIModel) {
+<b class="nc">&nbsp;        LocalDate date = LocalDate.now();</b>
+<b class="nc">&nbsp;        Date obj = Date.valueOf(LocalDate.now().plusDays(30));</b>
+&nbsp;        try {
+&nbsp;
+&nbsp;            //  if (personalDetails.getTodate().contains(date1)) {
+<b class="nc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="nc">&nbsp;            String query =&quot;select * from personaldetails where passID = ?&quot;;</b>
+<b class="nc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
+<b class="nc">&nbsp;            preparedStatement.setInt(1,passID);</b>
+<b class="nc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="nc">&nbsp;            if(!rs.next()) {</b>
+<b class="nc">&nbsp;                String Query = &quot;update PersonalDetails  set source =?, destination=?, charge =?,  fromdate = ?, todate = ? where passID = &quot; + passID;</b>
+<b class="nc">&nbsp;                preparedStatement = connection.prepareStatement(Query);</b>
+<b class="nc">&nbsp;                preparedStatement.setString(1, passAPIModel.getSource());</b>
+<b class="nc">&nbsp;                preparedStatement.setString(2, passAPIModel.getDestination());</b>
+<b class="nc">&nbsp;                if ((passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Baner&quot;)) ||</b>
+<b class="nc">&nbsp;                        (passAPIModel.getSource().contains(&quot;Baner&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {</b>
+<b class="nc">&nbsp;                    int ticket = 15;</b>
+<b class="nc">&nbsp;                    int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                    int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                    preparedStatement.setInt(3, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                } else if ((passAPIModel.getSource().contains(&quot;Dange Chowk&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Pashan&quot;)) ||</b>
+<b class="nc">&nbsp;                        (passAPIModel.getSource().contains(&quot;Pashan&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Dange Chowk&quot;))) {</b>
+<b class="nc">&nbsp;                    int ticket = 12;</b>
+<b class="nc">&nbsp;                    int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                    int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                    preparedStatement.setInt(3, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                } else if ((passAPIModel.getSource().contains(&quot;Hinjwadi&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Shivaji Nagar&quot;)) ||</b>
+<b class="nc">&nbsp;                        (passAPIModel.getSource().contains(&quot;Shivaji Nagar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Hinjwadi&quot;))) {</b>
+<b class="nc">&nbsp;                    int ticket = 30;</b>
+<b class="nc">&nbsp;                    int amount = (ticket * 2 * 30);</b>
+<b class="nc">&nbsp;                    int charge = (amount * 35) / 100;</b>
+<b class="nc">&nbsp;                    preparedStatement.setInt(3, charge);</b>
+&nbsp;
+<b class="nc">&nbsp;                } else {</b>
+<b class="nc">&nbsp;                    int amount = 1600;</b>
+<b class="nc">&nbsp;                    preparedStatement.setInt(3, amount);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                preparedStatement.setDate(4, Date.valueOf(passAPIModel.getFromdate()));</b>
+<b class="nc">&nbsp;                preparedStatement.setDate(5, obj);</b>
+&nbsp;                //  preparedStatement.setInt(6, passAPIModel.getPassID());
+&nbsp;
+<b class="nc">&nbsp;                int rowsAffected = preparedStatement.executeUpdate();</b>
+<b class="nc">&nbsp;                try {</b>
+<b class="nc">&nbsp;                    if (rowsAffected &gt; 0) {</b>
+&nbsp;                        return ResponseEntity.ok(&quot;pass renewed successfully&quot;);
+<b class="nc">&nbsp;                    }</b>
+&nbsp;                }catch (Exception e)
+&nbsp;                {
+&nbsp;                    System.out.println(&quot;Exception occurred :&quot;+e);
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.info(&quot;exception occurred : &quot; + e);</b>
+<b class="nc">&nbsp;           System.out.println(&quot;Exception occurred&quot;+e);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;</b>
+&nbsp;        return null;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;</b>
+<b class="fc">&nbsp;    //  *******************  Delete from pass only if not exist in userlogin  ***********//</b>
+&nbsp;     public static Boolean deletePassAPI(@PathVariable int passID) {
+&nbsp;        boolean flag = false;
+&nbsp;        try {
+&nbsp;            connection = Connectivity.CreateConnection();
+&nbsp;            String query = &quot;Delete from PersonalDetails where passID = ? &quot;;
+&nbsp;            preparedStatement = connection.prepareStatement(query);
+<b class="fc">&nbsp;            preparedStatement.setInt(1, passID);</b>
+&nbsp;            int rowsAffected = preparedStatement.executeUpdate();
+<b class="fc">&nbsp;</b>
+<b class="fc">&nbsp;            if (rowsAffected &gt; 0) {</b>
+<b class="fc">&nbsp;                  new ResponseEntity&lt;&gt;(&quot;User Deleted Successfully&quot;,HttpStatus.OK);</b>
+<b class="fc">&nbsp;                flag = true;</b>
+<b class="fc">&nbsp;            } else {</b>
+&nbsp;                 new ResponseEntity&lt;&gt;(&quot;No record found with ID &quot; + passID,HttpStatus.NOT_FOUND);
+<b class="fc">&nbsp;            }</b>
+<b class="nc">&nbsp;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+&nbsp;            log.error(&quot;Exception occurred : &quot; + e);
+<b class="fc">&nbsp;        }</b>
+&nbsp;       return flag;
+&nbsp;    }
+<b class="nc">&nbsp;</b>
+<b class="nc">&nbsp;}</b>
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-24 11:24</div>
+</div>
+</body>
+</html>

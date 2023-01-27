@@ -1,16 +1,11 @@
 package OnlineBusPassGeneration.OnlineBusPass.model;
 
-import java.sql.Date;
-
-public class PersonalDetails {
-        int personID;
+public class PassAPIModel {
+        int passID;
 
         UserLogin  userLogin;
+       // PersonalDetails personalDetails;
         int userID;
-        String firstname;
-        String lastname;
-        String userIdentity;
-        int age;
         String profession;
         String source;
         String destination;
@@ -18,27 +13,34 @@ public class PersonalDetails {
         String charge;
 
         String todate;
+        String status;
 
 
 
-    public PersonalDetails(int personID, int userID, String firstname, String lastname, String userIdentity, int age, String profession,String source, String destination,String Date,String charge ) {
-        this.personID = personID;
+    public PassAPIModel(int passID, int userID, String profession, String source, String destination, String charge,String status) {
+        this.passID = passID;
         this.userID = userID;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.userIdentity = userIdentity;
-        this.age = age;
         this.profession = profession;
         this.source = source;
         this.destination = destination;
         this.fromdate = fromdate;
         this.todate = todate;
         this.charge = charge;
+        this.status = status;
+        //this.personalDetails = personalDetails;
     }
 
-    public PersonalDetails()
+    public PassAPIModel()
     {
         super();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getProfession()
@@ -97,44 +99,14 @@ public class PersonalDetails {
     }
 
 
-    public int getPersonID() {
-        return personID;
+    public int getPassID() {
+        return passID;
     }
 
     public void setPersonID(int personID) {
-        this.personID = personID;
-    }
-    public String getFirstname() {
-        return firstname;
+        this.passID = personID;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-    public String getUserIdentity() {
-        return userIdentity;
-    }
-
-    public void setUserIdentity(String userIdentity)
-    {
-        this.userIdentity = userIdentity;
-    }
-    public int getAge()
-    {
-        return age;
-    }
-
-    public void setAge(int age)
-    {
-        this.age = age;
-    }
 
     public String getCharge(int charge)
     {
@@ -149,12 +121,8 @@ public class PersonalDetails {
     @Override
     public String toString() {
         return "PersonalDetails{" +
-                "personID=" + personID +
+                "passID=" + passID +
                 ", userID=" + userID +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", userIdentity='" + userIdentity + '\'' +
-                ", age=" + age +'\'' +
                 ", source='" + source + '\'' +
                 ", destination='" + destination + '\''+
 //                ", fromdate=" + fromdate +'

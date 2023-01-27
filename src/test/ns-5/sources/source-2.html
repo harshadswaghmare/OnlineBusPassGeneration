@@ -1,0 +1,452 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: UserRepository (OnlineBusPassGeneration.OnlineBusPass.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserRepository</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.9%
+  </span>
+  <span class="absValue">
+    (125/202)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.repository;
+&nbsp;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.connection.Connectivity;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
+&nbsp;import org.json.simple.JSONArray;
+&nbsp;import org.json.simple.JSONObject;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.HttpStatusCode;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;
+&nbsp;import java.sql.Connection;
+&nbsp;import java.sql.PreparedStatement;
+&nbsp;import java.sql.ResultSet;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.regex.Matcher;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;
+<b class="nc">&nbsp;public class UserRepository {</b>
+&nbsp;
+<b class="fc">&nbsp;    public static Connection connection = null;</b>
+<b class="fc">&nbsp;    public static PreparedStatement preparedStatement = null;</b>
+&nbsp;
+<b class="fc">&nbsp;   public static  Logger log = LoggerFactory.getLogger(UserRepository.class);</b>
+&nbsp;
+&nbsp;    private static final String mobileRegex = (&quot;(0/91)?[7-9][0-9]{9}&quot;);
+&nbsp;    private static final String aadhaarRegex = &quot;^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$&quot;;
+&nbsp;    private static final String password = &quot;^(?=.*[0-9])&quot;  //at least one digit should be
+&nbsp;                                           + &quot;(?=.*[a-z])(?=.*[A-Z])&quot;      // at least one lowercase and uppercase should be there
+&nbsp;                                           + &quot;(?=.*[@#$%^&amp;+=])&quot;            //at least one character should be
+&nbsp;                                           + &quot;(?=\\S+$).{8,20}$&quot;;         // Minimum and maximum Length
+&nbsp;    private static final String email = &quot;^[a-z0-9._]+@(.+)$&quot;;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    //Select All data from userAPI
+&nbsp;
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; retrieveAllData() throws SQLException {
+<b class="fc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="fc">&nbsp;        JSONArray jsonArray = new JSONArray();</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String query = &quot;select * from UserLogin order by userID asc&quot;;</b>
+<b class="fc">&nbsp;            log.debug(&quot;processing Data&quot;);</b>
+<b class="fc">&nbsp;            log.info(query);</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+&nbsp;
+<b class="fc">&nbsp;            while (rs.next()) {</b>
+<b class="fc">&nbsp;                JSONObject obj = new JSONObject();</b>
+&nbsp;
+<b class="fc">&nbsp;                obj.put(&quot;userid&quot;, rs.getInt(&quot;userid&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;username: &quot;, rs.getString(&quot;username&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;email&quot;, rs.getString(&quot;email&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;password&quot;, rs.getString(&quot;password&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;mobileNo&quot;, rs.getString(&quot;mobileNo&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;firstname&quot;, rs.getString(&quot;firstname&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;lastname&quot;, rs.getString(&quot;lastname&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;userIdentity&quot;, rs.getString(&quot;userIdentity&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;age&quot;, rs.getInt(&quot;age&quot;));</b>
+&nbsp;                //obj.put(&quot;profession&quot;, rs.getString(&quot;profession&quot;));
+<b class="fc">&nbsp;                jsonArray.add(obj);</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;            jsonObject.put(&quot;User_Data&quot;, jsonArray);</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.info(e.getMessage());</b>
+&nbsp;        } finally {
+<b class="fc">&nbsp;            connection.close();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        System.out.println(jsonObject);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(jsonObject);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;  //************Insert of user api ***********//
+&nbsp;    public static ResponseEntity &lt;String&gt; insert(UserLogin userLogin) {
+<b class="fc">&nbsp;        PreparedStatement preparedStatement = null;</b>
+&nbsp;
+&nbsp;        try {
+&nbsp;
+<b class="fc">&nbsp;            Connection connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            log.info(&quot;Connection established successfully&quot;);</b>
+<b class="fc">&nbsp;            String prequery = &quot;select * from userLogin where username = ?&quot;;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(prequery);</b>
+<b class="fc">&nbsp;            preparedStatement.setString(1, userLogin.getUsername());</b>
+&nbsp;            //preparedStatement.setString(2,userLogin.getEmail());
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;            if (!rs.next()) {</b>
+<b class="fc">&nbsp;                String query = &quot;insert into UserLogin(userName,email,password,mobileNo,firstname,lastname,useridentity,age)&quot; +</b>
+&nbsp;                        &quot;values(?,?,md5(?),?,?,?,?,?)&quot;;
+<b class="fc">&nbsp;                preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;                preparedStatement.setString(1, userLogin.getUsername());</b>
+<b class="fc">&nbsp;                preparedStatement.setString(2, userLogin.getEmail());</b>
+<b class="fc">&nbsp;                preparedStatement.setString(3, userLogin.getPassword());</b>
+<b class="fc">&nbsp;                preparedStatement.setString(4, userLogin.getMobileNo());</b>
+&nbsp;
+<b class="fc">&nbsp;                preparedStatement.setString(5, userLogin.getFirstname());</b>
+<b class="fc">&nbsp;                preparedStatement.setString(6, userLogin.getLastname());</b>
+<b class="fc">&nbsp;                preparedStatement.setString(7, userLogin.getUserIdentity());</b>
+<b class="fc">&nbsp;                preparedStatement.setInt(8, userLogin.getAge());</b>
+&nbsp;                //preparedStatement.setString(9, userLogin.getProfession());
+&nbsp;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;                if (Pattern.matches(email, userLogin.getEmail())) {  //Email Validation</b>
+<b class="nc">&nbsp;                    log.info(&quot;Email verified&quot;);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;( &quot;enter valid  emailID&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                if (Pattern.matches(password, userLogin.getPassword())) {  //password validation</b>
+<b class="nc">&nbsp;                    log.info(null);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;( &quot;password should have at least one uppercase letter,one lowercase letter one character&quot; +</b>
+&nbsp;                            &quot;and length should be between 8 - 20&quot;,HttpStatus.EXPECTATION_FAILED);
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                if (Pattern.matches(aadhaarRegex,userLogin.getUserIdentity())) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Aadhaar is verified&quot;);</b>
+&nbsp;                }
+&nbsp;                    else{
+<b class="nc">&nbsp;                    return new ResponseEntity(&quot;Enter valid Aadhaar number&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                Pattern mobile = Pattern.compile(mobileRegex);    //mobileNo Validation</b>
+<b class="nc">&nbsp;                Matcher m1 = mobile.matcher(userLogin.getMobileNo());</b>
+<b class="nc">&nbsp;                boolean b1 = m1.matches();</b>
+<b class="nc">&nbsp;                if (b1) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;mobile no is verified&quot;);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;Enter valid mobile no&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                if (userLogin.getUsername().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;enter user name&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;enter username&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (userLogin.getPassword().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;enter password&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;return password&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (userLogin.getEmail().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;enter email&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;return email&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (userLogin.getMobileNo().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Enter Mobile number&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;Enter Mobile Number&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                if (userLogin.getFirstname().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Enter First name&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;Enter First name&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (userLogin.getLastname().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Enter Last Name&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt; (&quot;Enter Last Name&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (userLogin.getUserIdentity().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Enter Aadhaar Number&quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;Enter Aadhaar Number&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (String.valueOf(userLogin.getAge()).isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Enter Age &quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt; (&quot;Enter Age&quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (userLogin.getProfession().isEmpty()) {</b>
+<b class="nc">&nbsp;                    log.info(&quot;Enter your profession &quot;);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;Enter your profession &quot;,HttpStatus.EXPECTATION_FAILED);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                int rowAffected = preparedStatement.executeUpdate();</b>
+<b class="nc">&nbsp;                if(rowAffected &gt; 0) {</b>
+<b class="nc">&nbsp;                    String sqlQuery = &quot;select userID from userLogin where username =?&quot;;</b>
+<b class="nc">&nbsp;                    preparedStatement = connection.prepareStatement(sqlQuery);</b>
+<b class="nc">&nbsp;                    preparedStatement.setString(1,userLogin.getUsername());</b>
+<b class="nc">&nbsp;                    rs = preparedStatement.executeQuery();</b>
+<b class="nc">&nbsp;                    if (rs.next()) {</b>
+<b class="nc">&nbsp;                        int id = rs.getInt(1);</b>
+<b class="nc">&nbsp;                        return new ResponseEntity&lt;&gt;(&quot;User created UserID &quot; + id, HttpStatus.CREATED);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+&nbsp;                else{
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;something went wrong&quot;,HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="fc">&nbsp;            log.info(&quot;exception occurred : &quot; + e);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        log.info(userLogin.getUsername() + &quot; already exist&quot;);</b>
+<b class="fc">&nbsp;         return ResponseEntity.ok(userLogin.getUsername() + &quot; already exist&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    //*******************  update users api ***********
+&nbsp;    public static ResponseEntity&lt;String&gt; updateUserLogin(@PathVariable int userID, UserLogin userLogin) {
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String Query = &quot;select userid from userlogin where userID= &quot;+userID;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(Query);</b>
+<b class="fc">&nbsp;            preparedStatement.setInt(1,userLogin.getUserid());</b>
+<b class="nc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="nc">&nbsp;            if(!rs.next()) {</b>
+&nbsp;
+<b class="nc">&nbsp;                String query = &quot;update userLogin set email = ?,password =?, mobileNo=? where userID =&quot; + userID;</b>
+<b class="nc">&nbsp;                preparedStatement = connection.prepareStatement(query);</b>
+<b class="nc">&nbsp;                preparedStatement.setString(1, userLogin.getEmail());</b>
+<b class="nc">&nbsp;                preparedStatement.setString(2, userLogin.getPassword());</b>
+<b class="nc">&nbsp;                preparedStatement.setString(3, userLogin.getMobileNo());</b>
+<b class="nc">&nbsp;                int rowsAffected = preparedStatement.executeUpdate();</b>
+<b class="nc">&nbsp;                log.info(String.valueOf(rowsAffected));</b>
+<b class="nc">&nbsp;                if (rowsAffected &gt; 0) {</b>
+<b class="nc">&nbsp;                    return ResponseEntity.ok(&quot;user profile Updated successfully&quot;);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;something went wrong&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</b>
+&nbsp;                }
+&nbsp;            }else{
+<b class="nc">&nbsp;                return ResponseEntity.ok(&quot;user not found&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="fc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   //*************** **************   Delete user  **************** ********************
+&nbsp;
+&nbsp;    public static ResponseEntity&lt;String&gt; deleteFromUserLogin(@PathVariable int UserID) {
+<b class="fc">&nbsp;        boolean flag = false;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String Query = &quot;Select * from userLogin where userID = ?&quot;;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(Query);</b>
+<b class="fc">&nbsp;            preparedStatement.setInt(1,UserID);</b>
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;            if(!rs.next()) {</b>
+<b class="fc">&nbsp;                String query = &quot;Delete from userLogin where userID = ? &quot;;</b>
+<b class="fc">&nbsp;                preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;                preparedStatement.setInt(1, UserID);</b>
+<b class="fc">&nbsp;                int a = preparedStatement.executeUpdate();</b>
+<b class="fc">&nbsp;                if (a &gt; 0) {</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(&quot;user Deleted Successfully&quot;,HttpStatus.OK);</b>
+&nbsp;
+&nbsp;                } else {
+<b class="fc">&nbsp;                    return ResponseEntity.ok(&quot;user not found&quot;);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;           // return ResponseEntity.ok(&quot;User Not found against UserID &quot;+UserID);
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;       return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    //***************** ****** Find user by id  ********************
+&nbsp;
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; findByID(@PathVariable int userID) throws SQLException {
+<b class="fc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="fc">&nbsp;       List&lt;String&gt;list = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String query = &quot;select * from UserLogin where userID = ?&quot;;</b>
+<b class="fc">&nbsp;            log.info(&quot;processing Data from database&quot;);</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;            preparedStatement.setInt(1, userID);</b>
+&nbsp;
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;                while (rs.next()) {</b>
+<b class="fc">&nbsp;                    JSONObject obj = new JSONObject();</b>
+<b class="fc">&nbsp;                    obj.put(&quot;userid&quot;, rs.getInt(&quot;userid&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;username&quot;, rs.getString(&quot;username&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;email&quot;, rs.getString(&quot;email&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;password&quot;, rs.getString(&quot;password&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;mobileNo&quot;, rs.getString(&quot;mobileNo&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;firstname&quot;, rs.getString(&quot;firstname&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;lastname&quot;, rs.getString(&quot;lastname&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;userIdentity&quot;, rs.getString(&quot;userIdentity&quot;));</b>
+<b class="fc">&nbsp;                    obj.put(&quot;age&quot;, rs.getString(&quot;age&quot;));</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;                    list.add(String.valueOf(obj));</b>
+<b class="fc">&nbsp;                }</b>
+<b class="fc">&nbsp;                jsonObject.put(&quot;pass&quot;, list);</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;          log.info(&quot;Exception Occurred &quot;+e.getMessage());</b>
+&nbsp;        } finally {
+<b class="fc">&nbsp;            connection.close();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        //return jsonObject;
+<b class="fc">&nbsp;        return ResponseEntity.ok(jsonObject);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    //Inner join of UserLogin and PersonalDetails
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; findUserPass(@PathVariable int userID) throws SQLException {
+<b class="fc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="fc">&nbsp;        JSONArray jsonArray = new JSONArray();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String query = &quot;select u.*,p.passID,p.source,p.destination,p.fromDate, p.toDate,p.charge,p.status from userLogin as u inner join personalDetails as p on p.userID = u.userID where u.userID =?&quot;;</b>
+<b class="fc">&nbsp;            log.debug(&quot;we are processing Data&quot;);</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;            preparedStatement.setInt(1,userID);</b>
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;          while(rs.next()) {</b>
+<b class="fc">&nbsp;              JSONObject obj = new JSONObject();</b>
+<b class="fc">&nbsp;                obj.put(&quot;userid&quot;, rs.getInt(&quot;userid&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;username&quot;, rs.getString(&quot;username&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;email&quot;, rs.getString(&quot;email&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;firstname&quot;, rs.getString(&quot;firstname&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;lastname&quot;, rs.getString(&quot;lastname&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;userIdentity&quot;, rs.getString(&quot;userIdentity&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;age&quot;, rs.getString(&quot;age&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;source&quot;, rs.getString(&quot;source&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;destination&quot;, rs.getString(&quot;destination&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;fromDate&quot;, rs.getString(&quot;fromDate&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;toDate&quot;, rs.getString(&quot;toDate&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;charge&quot;, rs.getString(&quot;charge&quot;));</b>
+&nbsp;
+<b class="fc">&nbsp;                jsonArray.add(obj);</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;             jsonObject.put(&quot;pass&quot;,jsonArray);</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Exception occurred :&quot; + e);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(jsonObject);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-24 11:24</div>
+</div>
+</body>
+</html>

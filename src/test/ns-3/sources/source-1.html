@@ -1,0 +1,191 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PersonController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: PersonController (OnlineBusPassGeneration.OnlineBusPass.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PersonController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.controller;
+&nbsp;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.repository.PassAPIRepository;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.repository.UserRepository;
+&nbsp;import org.json.simple.JSONObject;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import java.sql.SQLException;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;api/pass&quot;)
+<b class="fc">&nbsp;public class PersonController {</b>
+&nbsp;
+&nbsp;   // ***************  select  PersonalData  ***************
+&nbsp;    @GetMapping(&quot;/get&quot;)
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; GetAllUserData()throws SQLException {
+<b class="nc">&nbsp;        return PassAPIRepository.retrieveAllDataFromPersonalDetails();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    //***************  Insert Data Into PersonalDetails  ***************
+&nbsp;    @PostMapping(&quot;/post&quot;)
+&nbsp;    public String insertData( @RequestBody PassAPIModel passAPIModel) throws SQLException {
+<b class="nc">&nbsp;        return PassAPIRepository.insertPersonal(passAPIModel);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // ********************  Renewal Of pass ********************
+&nbsp;
+&nbsp;    @PutMapping(&quot;put/{PassID}&quot;)
+&nbsp;    public static String update(@PathVariable int PassID,@RequestBody PassAPIModel passAPIModel) throws SQLException {
+<b class="nc">&nbsp;        String result = String.valueOf(PassAPIRepository.update(PassID,passAPIModel));</b>
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    //***************  Delete From PersonalDetails  ***************
+&nbsp;    @DeleteMapping(&quot;delete/{passID}&quot;)
+&nbsp;    public boolean delete(@PathVariable int passID) {
+&nbsp;        // boolean result = false;
+<b class="nc">&nbsp;       boolean result = PassAPIRepository.deletePassAPI(passID);</b>
+<b class="nc">&nbsp;       return result;</b>
+&nbsp;    }
+&nbsp;//
+&nbsp;//
+&nbsp;//    //***************  Insert into source List  ***************
+&nbsp;//    @PostMapping(&quot;/insertIntoSource/{source}&quot;)
+&nbsp;//    public JSONObject result(@PathVariable String source){
+&nbsp;//       return TravellerRepository.sourceInsert(source);
+&nbsp;//    }
+&nbsp;//
+&nbsp;//
+&nbsp;//    //***************  Insert into source List  ***************
+&nbsp;//    @DeleteMapping(&quot;/deleteFromSource/{source}&quot;)
+&nbsp;//    public JSONObject delete(@PathVariable String source){
+&nbsp;//        return TravellerRepository.sourceDelete(source);
+&nbsp;//
+&nbsp;//    }
+&nbsp;//
+&nbsp;//
+&nbsp;//    //***************  Update from PersonalDetails only firstname and lastname  ***************
+&nbsp;
+&nbsp;//
+&nbsp;//
+&nbsp;////    //***************  Search User Data  ***************
+&nbsp;////    @GetMapping(&quot;selectAllFromUserLoginByUserID/{userID}&quot;)
+&nbsp;////    public static HashMap&lt;String,Object&gt;findByIDUserLogin(@PathVariable(&quot;userID&quot;) int userID, @RequestBody UserLogin userLogin) throws SQLException {
+&nbsp;////      return (HashMap&lt;String, Object&gt;) TravellerRepository.findByID(userID);
+&nbsp;////    }
+&nbsp;//
+&nbsp;//
+&nbsp;//    //***************  Search PersonalDetails Data using userid  ***************
+&nbsp;//    @GetMapping(&quot;selectAllFromPersonalDetailsWhereUserID/{userID}&quot;)
+&nbsp;//    public static HashMap&lt;String,Object&gt;findByIDPersonalDetails(@PathVariable(&quot;userID&quot;) int userID, @RequestBody PersonalDetails personalDetails) throws SQLException {
+&nbsp;//        return (HashMap&lt;String, Object&gt;) TravellerRepository.findByIDPersonalDetails(userID);
+&nbsp;//    }
+&nbsp;//
+&nbsp;//    // ***************  renewed pass using personal details  ***************
+&nbsp;//    @PutMapping(&quot;renewedPass/{personalID}&quot;)
+&nbsp;//    public String updateInsert(@PathVariable int personalID,@RequestBody PersonalDetails personalDetails) throws SQLException {
+&nbsp;//        String result = TravellerRepository.updateInsertPersonalDetails(personalID,personalDetails);
+&nbsp;//        return result;
+&nbsp;//    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-24 11:24</div>
+</div>
+</body>
+</html>

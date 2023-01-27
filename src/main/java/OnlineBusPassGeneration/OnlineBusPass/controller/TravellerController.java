@@ -1,102 +1,116 @@
 package OnlineBusPassGeneration.OnlineBusPass.controller;
 
 import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
-import OnlineBusPassGeneration.OnlineBusPass.repository.TravellerRepository;
+import OnlineBusPassGeneration.OnlineBusPass.repository.UserRepository;
 import org.json.simple.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Date;
+
 import java.sql.SQLException;
 
 @RestController
+@RequestMapping("api/users")
 public class TravellerController {
 
 
     //***************  Insert into userLogin  ******************
-    @PostMapping("insertIntoUserLogin")
-    public String insertData(@RequestBody UserLogin userLogin) {
-        return TravellerRepository.insert(userLogin);
+    @PostMapping
+    public static ResponseEntity<String> insertData(@RequestBody UserLogin userLogin) {
+        return UserRepository.insert(userLogin);
     }
 
 
     //***********  Delete from user Login  *****************
-    @DeleteMapping("deleteFromUserLogin/{UserID}")
-    public boolean deleteUser(@PathVariable int UserID) {
+    @DeleteMapping("/{UserID}")
+    public static ResponseEntity<String> deleteUser(@PathVariable int UserID) {
         // boolean result = false;
-        boolean result = TravellerRepository.deleteFromUserLogin(UserID);
-        return result;
-    }
 
+        String result = String.valueOf(UserRepository.deleteFromUserLogin(UserID));
+       return ResponseEntity.ok(result);
+    }
 
     // *************** Select User Records  ***************
-    @GetMapping("selectAllFromUserLogin")
-    public static JSONObject getUserData() throws SQLException {
-        return TravellerRepository.retrieveAllData();
+    @GetMapping
+    public static ResponseEntity<String> getUserData() throws SQLException {
+        return UserRepository.retrieveAllData();
     }
+
 
 
 
     // ***************  Update User Login  ***************
-    @PutMapping("updateFromUserLogin/{UserID}")
-    public String update(@PathVariable int UserID,@RequestBody UserLogin userLogin) throws SQLException {
-     String result = TravellerRepository.updateUserLogin(UserID,userLogin);
-     return result;
+    @PutMapping("/{UserID}")
+    public static ResponseEntity<String> update(@PathVariable int UserID, @RequestBody UserLogin userLogin) throws SQLException {
+     return UserRepository.updateUserLogin(UserID,userLogin);
     }
 
 
-    // ***************  Find PersonalDetails by UserID  ***************
-    @GetMapping("selectFromUserLoginByID/{userID}")
-    public static JSONObject findUser(@PathVariable  int userID)throws  SQLException{
-       JSONObject jsonObject = new JSONObject();
-       jsonObject = TravellerRepository.findByID(userID);
-       return jsonObject;
+    // ***************  Find user details by UserID  ***************
+    @GetMapping("/{userID}")
+    public static ResponseEntity<String> findByUserID(@PathVariable  int userID)throws  SQLException{
+        return UserRepository.findByID(userID);
     }
 
 
-    // ***************  join ov userLogin and personalDetails ***************
-    @GetMapping("innerJoin")
-    public static JSONObject dataFromInnerJoin() throws SQLException {
-        return TravellerRepository.getInnerJoin();
+    // ******************** Find pass of the user using email and status = active  *******************//
+
+    @GetMapping("/get/{email}")
+    public static ResponseEntity<String>ByEmail(@PathVariable String email)throws  SQLException{
+       return UserRepository.findUserPassByEmail(email);
     }
 
 
-    @GetMapping("selectFirstName/{fromdate}")
-    public static JSONObject findFirstName(@PathVariable Date fromdate)throws  SQLException{
-        JSONObject jsonObject;
-        jsonObject = TravellerRepository.selectUsingDate(fromdate);
-        return jsonObject;
-    }
-
-//********* calculate total amount of the day  ***********
-    @GetMapping("total/{fromdate}")
-    public static JSONObject TotalOfTheDay(@PathVariable Date fromdate)throws  SQLException{
-        JSONObject a = new JSONObject();
-        a = TravellerRepository.selectTotalOfDate(fromdate);
-        System.out.println(a);
-        return a;
-    }
+//    @GetMapping("/get/{userID}")
+//    public static ResponseEntity<String> findUserPassByUserId(@PathVariable int userID)throws  SQLException{
+//        return UserRepository.findUserPassByUserID(userID);
+//    }
 
 
+//    // ***************  join ov userLogin and personalDetails using userid ***************
+//    @GetMapping("innerJoin")
+//    public static JSONObject dataFromInnerJoin() throws SQLException {
+//        return TravellerRepository.getInnerJoin();
+//    }
 
-    //****************  Display total Record  fromDate to toDate
-    @GetMapping("selectFromDateToDate/{fromdate}/{fromDate}")
-    public static JSONObject fromDateBetween(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
-        System.out.println("In a between method ");
-        JSONObject a = new JSONObject();
-        a = TravellerRepository.selectFromDateToDate(fromdate,fromDate);
-        System.out.println(a);
-        return a;
-    }
 
-    //************ Calculate total amount value fromDate to ToDate
+//    // *****************   Here we can check todays  record *************
+//    @GetMapping("selectAllWhereDate/{fromdate}")
+//    public static JSONObject findFirstName(@PathVariable Date fromdate)throws  SQLException{
+//        JSONObject jsonObject;
+//        jsonObject = TravellerRepository.selectUsingDate(fromdate);
+//        return jsonObject;
+//    }
+//
+////********* calculate total amount of the day  ***********
+//    @GetMapping("SelectTotalWhereDate/{fromdate}")
+//    public static int TotalOfTheDay(@PathVariable Date fromdate)throws  SQLException{
+//        int a = TravellerRepository.selectTotalOfDate(fromdate);
+//        System.out.println(a);
+//        return a;
+//    }
+//
+//
+//
+//    //****************  Display total Record  fromDate to toDate
+//    @GetMapping("selectFromDateToDate/{fromdate}/{fromDate}")
+//    public static JSONObject fromDateBetween(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
+//        System.out.println("In a between method ");
+//        JSONObject a = new JSONObject();
+//        a = TravellerRepository.selectFromDateToDate(fromdate,fromDate);
+//        System.out.println(a);
+//        return a;
+//    }
+//
+//    //************ Calculate total amount value fromDate to ToDate
+//
+//    @GetMapping("calculateTotalAmountFromDateToDate/{fromdate}/{fromDate}")
+//    public static int calculateTotalAmountFromDateToDate(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
+//        System.out.println("In a between method ");
+//        int a = TravellerRepository.CalculateTotalFromDateToDate(fromdate,fromDate);
+//        System.out.println(a);
+//        return a;
+//    }
 
-    @GetMapping("calculateTotalAmountFromDateToDate/{fromdate}/{fromDate}")
-    public static JSONObject calculateTotalAmountFromDateToDate(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
-        System.out.println("In a between method ");
-        JSONObject a = new JSONObject();
-        a = TravellerRepository.CalculateTotalFromDateToDate(fromdate,fromDate);
-        System.out.println(a);
-        return a;
-    }
 
 
 }
