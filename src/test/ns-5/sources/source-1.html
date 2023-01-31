@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    71.4%
+    83.3%
   </span>
   <span class="absValue">
-    (5/7)
+    (5/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    25.9%
+    30.4%
   </span>
   <span class="absValue">
-    (49/189)
+    (58/191)
   </span>
 </td>
 </tr>
@@ -93,6 +93,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.sql.*;
 &nbsp;import java.time.LocalDate;
 &nbsp;import java.util.HashMap;
+&nbsp;import java.util.Queue;
+&nbsp;
+&nbsp;import static java.sql.Date.*;
 &nbsp;
 <b class="nc">&nbsp;public class PassAPIRepository {</b>
 &nbsp;
@@ -102,7 +105,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;
 &nbsp;    //Select Personal Details Records
-&nbsp;    public static ResponseEntity&lt;JSONObject&gt; retrieveAllDataFromPersonalDetails() throws SQLException {
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; retrieveAllDataFromPersonalDetails(PassAPIModel passAPIModel) throws SQLException {
 <b class="fc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
 <b class="fc">&nbsp;        JSONArray jsonArray = new JSONArray();</b>
 &nbsp;
@@ -122,6 +125,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;                obj.put(&quot;fromDate&quot;, rs.getString(&quot;fromDate&quot;));</b>
 <b class="fc">&nbsp;                obj.put(&quot;toDate&quot;, rs.getString(&quot;toDate&quot;));</b>
 <b class="fc">&nbsp;                obj.put(&quot;charge&quot;, rs.getString(&quot;charge&quot;));</b>
+<b class="fc">&nbsp;                obj.put(&quot;status&quot;,rs.getString(&quot;status&quot;));</b>
 <b class="fc">&nbsp;                jsonArray.add(obj);</b>
 <b class="fc">&nbsp;            }</b>
 <b class="fc">&nbsp;             jsonObject.put(&quot;Personal Details&quot;, jsonArray);</b>
@@ -137,12 +141,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;
-&nbsp;
 &nbsp;    //****************   Insert PersonalDetails  *****************
 &nbsp;    public static String insertPersonal(PassAPIModel passAPIModel) {
 &nbsp;
 <b class="fc">&nbsp;        LocalDate date = LocalDate.now();</b>
-<b class="fc">&nbsp;        Date obj = Date.valueOf(LocalDate.now().plusDays(30));</b>
+<b class="fc">&nbsp;        Date obj = valueOf(LocalDate.now().plusDays(30));</b>
 &nbsp;        // UserLogin userLogin = new UserLogin();
 &nbsp;        try {
 <b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
@@ -243,8 +246,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;                        }
 &nbsp;                    }
 &nbsp;
-<b class="nc">&nbsp;                    preparedStatement.setDate(6, Date.valueOf(date));</b>
-<b class="nc">&nbsp;                    preparedStatement.setDate(7, obj);</b>
+<b class="nc">&nbsp;                    preparedStatement.setDate(6, Date.valueOf(passAPIModel.getFromdate()));</b>
+<b class="nc">&nbsp;                    preparedStatement.setDate(7, Date.valueOf(valueOf(passAPIModel.getFromdate()).toLocalDate().plusDays(30)));</b>
 &nbsp;
 <b class="nc">&nbsp;                    preparedStatement.setString(8,&quot;Pending&quot;);</b>
 &nbsp;
@@ -267,19 +270,80 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;
-&nbsp;    public static ResponseEntity&lt;String&gt; update(@RequestBody int passID, PassAPIModel passAPIModel) {
-<b class="nc">&nbsp;        LocalDate date = LocalDate.now();</b>
-<b class="nc">&nbsp;        Date obj = Date.valueOf(LocalDate.now().plusDays(30));</b>
+&nbsp;//    public static ResponseEntity&lt;String&gt; update(@RequestBody int passID, PassAPIModel passAPIModel) {
+&nbsp;//        LocalDate date = LocalDate.now();
+&nbsp;//        Date obj = Date.valueOf(LocalDate.now().plusDays(30));
+&nbsp;//        try {
+&nbsp;//
+&nbsp;//            //  if (personalDetails.getTodate().contains(date1)) {
+&nbsp;//            connection = Connectivity.CreateConnection();
+&nbsp;//            String query =&quot;select * from personaldetails where passID = ?&quot;;
+&nbsp;//            preparedStatement = connection.prepareStatement(query);
+&nbsp;//            preparedStatement.setInt(1,passID);
+&nbsp;//            ResultSet rs = preparedStatement.executeQuery();
+&nbsp;//            if(!rs.next()) {
+&nbsp;//                String Query = &quot;update PersonalDetails  set source =?, destination=?, charge =?,  fromdate = ?, todate = ? where passID = &quot; + passID;
+&nbsp;//                preparedStatement = connection.prepareStatement(Query);
+&nbsp;//                preparedStatement.setString(1, passAPIModel.getSource());
+&nbsp;//                preparedStatement.setString(2, passAPIModel.getDestination());
+&nbsp;//                if ((passAPIModel.getSource().contains(&quot;Bhumkar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Baner&quot;)) ||
+&nbsp;//                        (passAPIModel.getSource().contains(&quot;Baner&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Bhumkar&quot;))) {
+&nbsp;//                    int ticket = 15;
+&nbsp;//                    int amount = (ticket * 2 * 30);
+&nbsp;//                    int charge = (amount * 35) / 100;
+&nbsp;//                    preparedStatement.setInt(3, charge);
+&nbsp;//
+&nbsp;//                } else if ((passAPIModel.getSource().contains(&quot;Dange Chowk&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Pashan&quot;)) ||
+&nbsp;//                        (passAPIModel.getSource().contains(&quot;Pashan&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Dange Chowk&quot;))) {
+&nbsp;//                    int ticket = 12;
+&nbsp;//                    int amount = (ticket * 2 * 30);
+&nbsp;//                    int charge = (amount * 35) / 100;
+&nbsp;//                    preparedStatement.setInt(3, charge);
+&nbsp;//
+&nbsp;//                } else if ((passAPIModel.getSource().contains(&quot;Hinjwadi&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Shivaji Nagar&quot;)) ||
+&nbsp;//                        (passAPIModel.getSource().contains(&quot;Shivaji Nagar&quot;) &amp;&amp; passAPIModel.getDestination().contains(&quot;Hinjwadi&quot;))) {
+&nbsp;//                    int ticket = 30;
+&nbsp;//                    int amount = (ticket * 2 * 30);
+&nbsp;//                    int charge = (amount * 35) / 100;
+&nbsp;//                    preparedStatement.setInt(3, charge);
+&nbsp;//
+&nbsp;//                } else {
+&nbsp;//                    int amount = 1600;
+&nbsp;//                    preparedStatement.setInt(3, amount);
+&nbsp;//                }
+&nbsp;//                preparedStatement.setDate(4, Date.valueOf(passAPIModel.getFromdate()));
+&nbsp;//                preparedStatement.setDate(5, obj);
+&nbsp;//                //  preparedStatement.setInt(6, passAPIModel.getPassID());
+&nbsp;//
+&nbsp;//                int rowsAffected = preparedStatement.executeUpdate();
+&nbsp;//                try {
+&nbsp;//                    if (rowsAffected &gt; 0) {
+&nbsp;//                        return ResponseEntity.ok(&quot;pass renewed successfully&quot;);
+&nbsp;//                    }
+&nbsp;//                }catch (Exception e)
+&nbsp;//                {
+&nbsp;//                    System.out.println(&quot;Exception occurred :&quot;+e);
+&nbsp;//                }
+&nbsp;//            }
+&nbsp;//        } catch (Exception e) {
+&nbsp;//            log.info(&quot;exception occurred : &quot; + e);
+&nbsp;//           System.out.println(&quot;Exception occurred&quot;+e);
+&nbsp;//        }
+&nbsp;//
+&nbsp;//        return null;
+&nbsp;//    }
+&nbsp;    public static ResponseEntity&lt;String&gt; update(@RequestBody int PassID, PassAPIModel passAPIModel) {
+<b class="fc">&nbsp;        LocalDate date = LocalDate.now();</b>
+<b class="fc">&nbsp;        Date obj = valueOf(LocalDate.now().plusDays(30));</b>
 &nbsp;        try {
 &nbsp;
-&nbsp;            //  if (personalDetails.getTodate().contains(date1)) {
-<b class="nc">&nbsp;            connection = Connectivity.CreateConnection();</b>
-<b class="nc">&nbsp;            String query =&quot;select * from personaldetails where passID = ?&quot;;</b>
-<b class="nc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
-<b class="nc">&nbsp;            preparedStatement.setInt(1,passID);</b>
-<b class="nc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
-<b class="nc">&nbsp;            if(!rs.next()) {</b>
-<b class="nc">&nbsp;                String Query = &quot;update PersonalDetails  set source =?, destination=?, charge =?,  fromdate = ?, todate = ? where passID = &quot; + passID;</b>
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String query =&quot;select * from personaldetails where passID = ?&quot;;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
+<b class="fc">&nbsp;            preparedStatement.setInt(1,PassID);</b>
+<b class="fc">&nbsp;            ResultSet rs = preparedStatement.executeQuery();</b>
+<b class="fc">&nbsp;            if(rs.next()) {</b>
+<b class="nc">&nbsp;                String Query = &quot;update PersonalDetails  set source =?, destination=?, charge =?,  fromdate = ?, todate = ? where passID =&quot; + PassID;</b>
 <b class="nc">&nbsp;                preparedStatement = connection.prepareStatement(Query);</b>
 <b class="nc">&nbsp;                preparedStatement.setString(1, passAPIModel.getSource());</b>
 <b class="nc">&nbsp;                preparedStatement.setString(2, passAPIModel.getDestination());</b>
@@ -309,54 +373,67 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;                    preparedStatement.setInt(3, amount);</b>
 &nbsp;                }
 <b class="nc">&nbsp;                preparedStatement.setDate(4, Date.valueOf(passAPIModel.getFromdate()));</b>
-<b class="nc">&nbsp;                preparedStatement.setDate(5, obj);</b>
-&nbsp;                //  preparedStatement.setInt(6, passAPIModel.getPassID());
+<b class="nc">&nbsp;                preparedStatement.setDate(5, Date.valueOf(valueOf(passAPIModel.getFromdate()).toLocalDate().plusDays(30)));</b>
+&nbsp;                //preparedStatement.setInt(6, passAPIModel.getPassID());
+&nbsp;
 &nbsp;
 <b class="nc">&nbsp;                int rowsAffected = preparedStatement.executeUpdate();</b>
-<b class="nc">&nbsp;                try {</b>
+&nbsp;                try {
 <b class="nc">&nbsp;                    if (rowsAffected &gt; 0) {</b>
-&nbsp;                        return ResponseEntity.ok(&quot;pass renewed successfully&quot;);
-<b class="nc">&nbsp;                    }</b>
-&nbsp;                }catch (Exception e)
-&nbsp;                {
-&nbsp;                    System.out.println(&quot;Exception occurred :&quot;+e);
-&nbsp;                }
+<b class="nc">&nbsp;                        return ResponseEntity.ok(&quot;Pass Updated Successfully, pay amount&quot;);</b>
+&nbsp;
+&nbsp;                    }
+<b class="nc">&nbsp;                } catch (Exception e) {</b>
+<b class="nc">&nbsp;                    System.out.println(&quot;Exception occurred&quot; + e);</b>
+<b class="nc">&nbsp;                }</b>
 <b class="nc">&nbsp;            }</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;                else{
+<b class="fc">&nbsp;                return new ResponseEntity&lt;&gt;(&quot;user not found&quot;,HttpStatus.NOT_FOUND);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;
 <b class="nc">&nbsp;        } catch (Exception e) {</b>
 <b class="nc">&nbsp;            log.info(&quot;exception occurred : &quot; + e);</b>
-<b class="nc">&nbsp;           System.out.println(&quot;Exception occurred&quot;+e);</b>
 <b class="nc">&nbsp;        }</b>
-<b class="nc">&nbsp;</b>
-&nbsp;        return null;
+<b class="nc">&nbsp;        return null;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
 &nbsp;
-<b class="fc">&nbsp;</b>
-<b class="fc">&nbsp;    //  *******************  Delete from pass only if not exist in userlogin  ***********//</b>
+&nbsp;
+&nbsp;    //  *******************  Delete from pass only if not exist in userlogin  ***********//
 &nbsp;     public static Boolean deletePassAPI(@PathVariable int passID) {
-&nbsp;        boolean flag = false;
+<b class="fc">&nbsp;        boolean flag = false;</b>
 &nbsp;        try {
-&nbsp;            connection = Connectivity.CreateConnection();
-&nbsp;            String query = &quot;Delete from PersonalDetails where passID = ? &quot;;
-&nbsp;            preparedStatement = connection.prepareStatement(query);
+<b class="fc">&nbsp;            connection = Connectivity.CreateConnection();</b>
+<b class="fc">&nbsp;            String query = &quot;Delete from PersonalDetails where passID = ? &quot;;</b>
+<b class="fc">&nbsp;            preparedStatement = connection.prepareStatement(query);</b>
 <b class="fc">&nbsp;            preparedStatement.setInt(1, passID);</b>
-&nbsp;            int rowsAffected = preparedStatement.executeUpdate();
-<b class="fc">&nbsp;</b>
+<b class="fc">&nbsp;            int rowsAffected = preparedStatement.executeUpdate();</b>
+&nbsp;
 <b class="fc">&nbsp;            if (rowsAffected &gt; 0) {</b>
-<b class="fc">&nbsp;                  new ResponseEntity&lt;&gt;(&quot;User Deleted Successfully&quot;,HttpStatus.OK);</b>
-<b class="fc">&nbsp;                flag = true;</b>
-<b class="fc">&nbsp;            } else {</b>
-&nbsp;                 new ResponseEntity&lt;&gt;(&quot;No record found with ID &quot; + passID,HttpStatus.NOT_FOUND);
-<b class="fc">&nbsp;            }</b>
-<b class="nc">&nbsp;</b>
+<b class="nc">&nbsp;                  new ResponseEntity&lt;&gt;(&quot;User Deleted Successfully&quot;,HttpStatus.OK);</b>
+<b class="nc">&nbsp;                flag = true;</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                 new ResponseEntity&lt;&gt;(&quot;No record found with ID &quot; + passID,HttpStatus.NOT_FOUND);</b>
+<b class="fc">&nbsp;                 flag = false;</b>
+&nbsp;            }
+&nbsp;
 <b class="nc">&nbsp;        } catch (Exception e) {</b>
-&nbsp;            log.error(&quot;Exception occurred : &quot; + e);
+<b class="nc">&nbsp;            log.error(&quot;Exception occurred : &quot; + e);</b>
 <b class="fc">&nbsp;        }</b>
-&nbsp;       return flag;
+<b class="fc">&nbsp;       return flag;</b>
 &nbsp;    }
-<b class="nc">&nbsp;</b>
-<b class="nc">&nbsp;}</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
 </code>
 </pre>
 </div>
@@ -380,7 +457,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-01-24 11:24</div>
+    <div style="float:right;">generated on 2023-01-31 12:45</div>
 </div>
 </body>
 </html>

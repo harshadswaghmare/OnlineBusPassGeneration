@@ -16,7 +16,6 @@ public class PassAPIModel {
         String status;
 
 
-
     public PassAPIModel(int passID, int userID, String profession, String source, String destination, String charge,String status) {
         this.passID = passID;
         this.userID = userID;
@@ -27,6 +26,7 @@ public class PassAPIModel {
         this.todate = todate;
         this.charge = charge;
         this.status = status;
+
         //this.personalDetails = personalDetails;
     }
 
@@ -34,6 +34,7 @@ public class PassAPIModel {
     {
         super();
     }
+    
 
     public String getStatus() {
         return status;

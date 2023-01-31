@@ -65,7 +65,6 @@ public class PassAPIRepository {
     }
 
 
-
     //****************   Insert PersonalDetails  *****************
     public static String insertPersonal(PassAPIModel passAPIModel) {
 
@@ -257,10 +256,7 @@ public class PassAPIRepository {
 //
 //        return null;
 //    }
-
-
-
-    public static ResponseEntity<String> updateInsertPersonalDetails(@RequestBody int PassID, PassAPIModel passAPIModel) {
+    public static ResponseEntity<String> update(@RequestBody int PassID, PassAPIModel passAPIModel) {
         LocalDate date = LocalDate.now();
         Date obj = valueOf(LocalDate.now().plusDays(30));
         try {
@@ -308,7 +304,7 @@ public class PassAPIRepository {
                 int rowsAffected = preparedStatement.executeUpdate();
                 try {
                     if (rowsAffected > 0) {
-                        return ResponseEntity.ok("Pass Updated Successfully, now you can pay");
+                        return ResponseEntity.ok("Pass Updated Successfully, pay amount");
 
                     }
                 } catch (Exception e) {
@@ -355,5 +351,10 @@ public class PassAPIRepository {
         }
        return flag;
     }
+
+
+
+
+
 
 }

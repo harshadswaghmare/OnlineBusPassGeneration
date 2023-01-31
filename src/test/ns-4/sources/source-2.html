@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > PaymentModule</title>
+  <title>Coverage Report > PaymentAPIModel</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.model</a>
 </div>
 
-<h1>Coverage Summary for Class: PaymentModule (OnlineBusPassGeneration.OnlineBusPass.model)</h1>
+<h1>Coverage Summary for Class: PaymentAPIModel (OnlineBusPassGeneration.OnlineBusPass.model)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,29 +40,29 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">PaymentModule</td>
+  <td class="name">PaymentAPIModel</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    32%
   </span>
   <span class="absValue">
-    (0/26)
+    (8/25)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    52.8%
   </span>
   <span class="absValue">
-    (0/41)
+    (19/36)
   </span>
 </td>
 </tr>
@@ -76,7 +76,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.model;
 &nbsp;
-&nbsp;public class PaymentModule
+&nbsp;public class PaymentAPIModel
 &nbsp;{
 &nbsp;    int payID;
 &nbsp;    int userID;
@@ -86,73 +86,63 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    int cvv;
 &nbsp;    String nameOnCard;
 &nbsp;    String transactionID;
-&nbsp;    int charge;
+&nbsp;    int amount;
 &nbsp;
-&nbsp;    int personalID;
+&nbsp;    int passID;
 &nbsp;
 &nbsp;    //*******newly added
 &nbsp;
-&nbsp;    String fromdate;
-&nbsp;    String todate;
+&nbsp;    String date;
 &nbsp;    String status;
 &nbsp;    //************
-&nbsp;    OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel passAPIModel;
-&nbsp;    UserLogin userLogin;
 &nbsp;
-<b class="nc">&nbsp;    public PaymentModule(int payID, int userID, int personalID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID,PassAPIModel passAPIModel, UserLogin userLogin, int charge, String fromdate, String todate, String status) {</b>
-<b class="nc">&nbsp;        this.payID = payID;</b>
-<b class="nc">&nbsp;        this.userID = userID;</b>
-<b class="nc">&nbsp;        this.personalID = personalID;</b>
-<b class="nc">&nbsp;        this.cardType = cardType;</b>
-<b class="nc">&nbsp;        this.cardNo = cardNo;</b>
-<b class="nc">&nbsp;        this.cardExpiry = cardExpiry;</b>
-<b class="nc">&nbsp;        this.cvv = cvv;</b>
-<b class="nc">&nbsp;        this.nameOnCard = nameOnCard;</b>
-<b class="nc">&nbsp;        this.transactionID = transactionID;</b>
-<b class="nc">&nbsp;        this.passAPIModel = passAPIModel;</b>
-<b class="nc">&nbsp;        this.userLogin = userLogin;</b>
-<b class="nc">&nbsp;        this.charge = charge;</b>
-<b class="nc">&nbsp;        this.fromdate = fromdate;</b>
-<b class="nc">&nbsp;        this.todate = todate;</b>
-<b class="nc">&nbsp;        this.status = status;</b>
+&nbsp;
+<b class="fc">&nbsp;    public PaymentAPIModel(int payID, int userID,int passID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID, int amount,String date) {</b>
+<b class="fc">&nbsp;        this.payID = payID;</b>
+<b class="fc">&nbsp;        this.userID = userID;</b>
+<b class="fc">&nbsp;        this.passID = passID;</b>
+<b class="fc">&nbsp;        this.cardType = cardType;</b>
+<b class="fc">&nbsp;        this.cardNo = cardNo;</b>
+<b class="fc">&nbsp;        this.cardExpiry = cardExpiry;</b>
+<b class="fc">&nbsp;        this.cvv = cvv;</b>
+<b class="fc">&nbsp;        this.nameOnCard = nameOnCard;</b>
+<b class="fc">&nbsp;        this.transactionID = transactionID;</b>
+<b class="fc">&nbsp;        this.amount = amount;</b>
+<b class="fc">&nbsp;        this.date = date;</b>
+&nbsp;
+&nbsp;
 &nbsp;
 &nbsp;    }
-&nbsp;    public PaymentModule ()
+&nbsp;    public PaymentAPIModel ()
 <b class="nc">&nbsp;    {</b>
 &nbsp;
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getFromdate() {
-<b class="nc">&nbsp;        return fromdate;</b>
+&nbsp;    public int getPassID() {
+<b class="fc">&nbsp;        return passID;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setFromdate(String fromdate) {
-<b class="nc">&nbsp;        this.fromdate = fromdate;</b>
+&nbsp;    public void setPassID(int passID) {
+<b class="nc">&nbsp;        this.passID = passID;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getTodate() {
-<b class="nc">&nbsp;        return todate;</b>
+&nbsp;    public String getDate() {
+<b class="nc">&nbsp;        return date;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setTodate(String todate) {
-<b class="nc">&nbsp;        this.todate = todate;</b>
+&nbsp;    public void setDate(String date) {
+<b class="nc">&nbsp;        this.date = date;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public int getCharge(int charge) {
-<b class="nc">&nbsp;        return this.charge;</b>
+&nbsp;
+&nbsp;    public int getAmount(int charge) {
+<b class="nc">&nbsp;        return this.amount;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setCharge(int charge) {
-<b class="nc">&nbsp;        this.charge = charge;</b>
+&nbsp;    public void setAmount(int charge) {
+<b class="nc">&nbsp;        this.amount = amount;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public int getPersonalID() {
-<b class="nc">&nbsp;        return personalID;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setPersonalID(int personalID) {
-<b class="nc">&nbsp;        this.personalID = personalID;</b>
-&nbsp;    }
 &nbsp;
 &nbsp;    public int getPayID() {
 <b class="nc">&nbsp;        return payID;</b>
@@ -163,7 +153,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public int getUserID() {
-<b class="nc">&nbsp;        return userID;</b>
+<b class="fc">&nbsp;        return userID;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setUserID(int userID) {
@@ -171,7 +161,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getCardType() {
-<b class="nc">&nbsp;        return cardType;</b>
+<b class="fc">&nbsp;        return cardType;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setCardType(String cardType) {
@@ -179,7 +169,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getCardNo() {
-<b class="nc">&nbsp;        return cardNo;</b>
+<b class="fc">&nbsp;        return cardNo;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setCardNo(String cardNo) {
@@ -187,7 +177,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getCardExpiry() {
-<b class="nc">&nbsp;        return cardExpiry;</b>
+<b class="fc">&nbsp;        return cardExpiry;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setCardExpiry(String cardExpiry) {
@@ -195,7 +185,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public int getCvv() {
-<b class="nc">&nbsp;        return cvv;</b>
+<b class="fc">&nbsp;        return cvv;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setCvv(int cvv) {
@@ -203,7 +193,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public String getNameOnCard() {
-<b class="nc">&nbsp;        return nameOnCard;</b>
+<b class="fc">&nbsp;        return nameOnCard;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void setNameOnCard(String nameOnCard) {
@@ -216,6 +206,24 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    public void setTransactionID(String transactionID) {
 <b class="nc">&nbsp;        this.transactionID = transactionID;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return &quot;PaymentAPIModel{&quot; +</b>
+&nbsp;                &quot;payID=&quot; + payID +
+&nbsp;                &quot;, userID=&quot; + userID +
+&nbsp;                &quot;, cardType=&#39;&quot; + cardType + &#39;\&#39;&#39; +
+&nbsp;                &quot;, cardNo=&#39;&quot; + cardNo + &#39;\&#39;&#39; +
+&nbsp;                &quot;, cardExpiry=&#39;&quot; + cardExpiry + &#39;\&#39;&#39; +
+&nbsp;                &quot;, cvv=&quot; + cvv +
+&nbsp;                &quot;, nameOnCard=&#39;&quot; + nameOnCard + &#39;\&#39;&#39; +
+&nbsp;                &quot;, transactionID=&#39;&quot; + transactionID + &#39;\&#39;&#39; +
+&nbsp;                &quot;, amount=&quot; + amount +
+&nbsp;                &quot;, passID=&quot; + passID +
+&nbsp;                &quot;, fromdate=&#39;&quot; + date + &#39;\&#39;&#39; +
+&nbsp;                &quot;, status=&#39;&quot; + status + &#39;\&#39;&#39; +
+&nbsp;                &#39;}&#39;;
 &nbsp;    }
 &nbsp;}
 &nbsp;
@@ -242,7 +250,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-01-24 11:24</div>
+    <div style="float:right;">generated on 2023-01-31 12:45</div>
 </div>
 </body>
 </html>

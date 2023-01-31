@@ -4,14 +4,15 @@ import OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel;
 import OnlineBusPassGeneration.OnlineBusPass.repository.PassAPIRepository;
 import OnlineBusPassGeneration.OnlineBusPass.repository.UserRepository;
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
 import java.sql.SQLException;
 
 @RestController
 @RequestMapping("api/pass")
-public class PersonController {
+public class PassAPIController {
 
    // ***************  select  PersonalData  ***************
     @GetMapping
@@ -31,7 +32,7 @@ public class PersonController {
 
     @PutMapping("/{PassID}")
     public static String update(@PathVariable int PassID,@RequestBody PassAPIModel passAPIModel) throws SQLException {
-        String result = String.valueOf(PassAPIRepository.updateInsertPersonalDetails(PassID,passAPIModel));
+        String result = String.valueOf(PassAPIRepository.update(PassID,passAPIModel));
         return result;
     }
 
@@ -43,6 +44,9 @@ public class PersonController {
        boolean result = PassAPIRepository.deletePassAPI(passID);
        return result;
     }
+
+
+
 //
 //
 //    //***************  Insert into source List  ***************

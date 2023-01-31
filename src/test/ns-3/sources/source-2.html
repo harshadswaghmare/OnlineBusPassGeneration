@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > TravellerController</title>
+  <title>Coverage Report > PaymentController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: TravellerController (OnlineBusPassGeneration.OnlineBusPass.controller)</h1>
+<h1>Coverage Summary for Class: PaymentController (OnlineBusPassGeneration.OnlineBusPass.controller)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">TravellerController</td>
+  <td class="name">PaymentController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    25%
   </span>
   <span class="absValue">
-    (7/7)
+    (1/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    10%
   </span>
   <span class="absValue">
-    (8/8)
+    (1/10)
   </span>
 </td>
 </tr>
@@ -76,116 +76,72 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.controller;
 &nbsp;
-&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.UserLogin;
-&nbsp;import OnlineBusPassGeneration.OnlineBusPass.repository.UserRepository;
-&nbsp;import org.json.simple.JSONObject;
-&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.model.PaymentAPIModel;
+&nbsp;
+&nbsp;import OnlineBusPassGeneration.OnlineBusPass.repository.PaymentAPIRepositoy;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;
+&nbsp;import java.sql.Date;
 &nbsp;import java.sql.SQLException;
 &nbsp;
+&nbsp;
+&nbsp;@RequestMapping(&quot;api/payment&quot;)
 &nbsp;@RestController
-&nbsp;@RequestMapping(&quot;api/users&quot;)
-<b class="fc">&nbsp;public class TravellerController {</b>
-&nbsp;
-&nbsp;
-&nbsp;    //***************  Insert into userLogin  ******************
-&nbsp;    @PostMapping(&quot;/post&quot;)
-&nbsp;    public static ResponseEntity&lt;String&gt; insertData(@RequestBody UserLogin userLogin) {
-<b class="fc">&nbsp;        return UserRepository.insert(userLogin);</b>
+<b class="fc">&nbsp;public class PaymentController {</b>
+&nbsp;    //*********make payment or insert payment  ************
+&nbsp;    @PostMapping
+&nbsp;    public String insertData(@RequestBody PaymentAPIModel paymentModule, PassAPIModel passAPIModel)throws SQLException {
+<b class="nc">&nbsp;        return PaymentAPIRepositoy.insertPaymentModule(paymentModule,passAPIModel);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
-&nbsp;    //***********  Delete from user Login  *****************
-&nbsp;    @DeleteMapping(&quot;delete/{UserID}&quot;)
-&nbsp;    public static ResponseEntity&lt;String&gt; deleteUser(@PathVariable int UserID) {
-&nbsp;        // boolean result = false;
-&nbsp;
-<b class="fc">&nbsp;        String result = String.valueOf(UserRepository.deleteFromUserLogin(UserID));</b>
-<b class="fc">&nbsp;       return ResponseEntity.ok(result);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    // *************** Select User Records  ***************
-&nbsp;    @GetMapping(&quot;/get&quot;)
-&nbsp;    public static ResponseEntity&lt;JSONObject&gt; getUserData() throws SQLException {
-<b class="fc">&nbsp;        return UserRepository.retrieveAllData();</b>
+&nbsp;    //********* calculate total amount of the day  ***********
+&nbsp;    @GetMapping(&quot;/{date}&quot;)
+&nbsp;    public static String TotalOfTheDay(@PathVariable Date date)throws  SQLException{
+<b class="nc">&nbsp;        String  a = String.valueOf(PaymentAPIRepositoy.selectTotalOfDate(date));</b>
+<b class="nc">&nbsp;        System.out.println(a);</b>
+<b class="nc">&nbsp;        return a;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
-&nbsp;
-&nbsp;
-&nbsp;    // ***************  Update User Login  ***************
-&nbsp;    @PutMapping(&quot;/put/{UserID}&quot;)
-&nbsp;    public static ResponseEntity&lt;String&gt; update(@PathVariable int UserID, @RequestBody UserLogin userLogin) throws SQLException {
-<b class="fc">&nbsp;     return UserRepository.updateUserLogin(UserID,userLogin);</b>
+&nbsp;    @GetMapping(&quot;/{date}/{todate}&quot;)
+&nbsp;    public static String fromDateBetween(@PathVariable Date date, @PathVariable Date todate)throws  SQLException{
+<b class="nc">&nbsp;        System.out.println(&quot;In a between method &quot;);</b>
+<b class="nc">&nbsp;        String a= null;</b>
+<b class="nc">&nbsp;        a = String.valueOf(PaymentAPIRepositoy.CalculateTotalFromDateToDate(date,todate));</b>
+<b class="nc">&nbsp;        System.out.println(a);</b>
+<b class="nc">&nbsp;        return a;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;
-&nbsp;    // ***************  Find user details by UserID  ***************
-&nbsp;    @GetMapping(&quot;/get/{userID}&quot;)
-&nbsp;    public static ResponseEntity&lt;JSONObject&gt; findPassByUserID(@PathVariable  int userID)throws  SQLException{
-<b class="fc">&nbsp;        return UserRepository.findByID(userID);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;
-&nbsp;    // ******************** Find pass of the user  *******************//
-&nbsp;
-&nbsp;    @GetMapping(&quot;/get/pass/{userID}&quot;)
-&nbsp;    public static ResponseEntity&lt;JSONObject&gt; findUserPass(@PathVariable  int userID)throws  SQLException{
-<b class="fc">&nbsp;       return UserRepository.findUserPass(userID);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;
-&nbsp;//    // ***************  join ov userLogin and personalDetails using userid ***************
-&nbsp;//    @GetMapping(&quot;innerJoin&quot;)
-&nbsp;//    public static JSONObject dataFromInnerJoin() throws SQLException {
-&nbsp;//        return TravellerRepository.getInnerJoin();
-&nbsp;//    }
-&nbsp;
-&nbsp;
-&nbsp;//    // *****************   Here we can check todays  record *************
-&nbsp;//    @GetMapping(&quot;selectAllWhereDate/{fromdate}&quot;)
-&nbsp;//    public static JSONObject findFirstName(@PathVariable Date fromdate)throws  SQLException{
-&nbsp;//        JSONObject jsonObject;
-&nbsp;//        jsonObject = TravellerRepository.selectUsingDate(fromdate);
-&nbsp;//        return jsonObject;
-&nbsp;//    }
-&nbsp;//
-&nbsp;////********* calculate total amount of the day  ***********
-&nbsp;//    @GetMapping(&quot;SelectTotalWhereDate/{fromdate}&quot;)
-&nbsp;//    public static int TotalOfTheDay(@PathVariable Date fromdate)throws  SQLException{
-&nbsp;//        int a = TravellerRepository.selectTotalOfDate(fromdate);
-&nbsp;//        System.out.println(a);
-&nbsp;//        return a;
-&nbsp;//    }
-&nbsp;//
-&nbsp;//
-&nbsp;//
-&nbsp;//    //****************  Display total Record  fromDate to toDate
-&nbsp;//    @GetMapping(&quot;selectFromDateToDate/{fromdate}/{fromDate}&quot;)
-&nbsp;//    public static JSONObject fromDateBetween(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
-&nbsp;//        System.out.println(&quot;In a between method &quot;);
-&nbsp;//        JSONObject a = new JSONObject();
-&nbsp;//        a = TravellerRepository.selectFromDateToDate(fromdate,fromDate);
-&nbsp;//        System.out.println(a);
-&nbsp;//        return a;
-&nbsp;//    }
-&nbsp;//
-&nbsp;//    //************ Calculate total amount value fromDate to ToDate
-&nbsp;//
-&nbsp;//    @GetMapping(&quot;calculateTotalAmountFromDateToDate/{fromdate}/{fromDate}&quot;)
-&nbsp;//    public static int calculateTotalAmountFromDateToDate(@PathVariable Date fromdate,@PathVariable Date fromDate)throws  SQLException{
-&nbsp;//        System.out.println(&quot;In a between method &quot;);
-&nbsp;//        int a = TravellerRepository.CalculateTotalFromDateToDate(fromdate,fromDate);
-&nbsp;//        System.out.println(a);
-&nbsp;//        return a;
-&nbsp;//    }
 &nbsp;
 &nbsp;
 &nbsp;
 &nbsp;}
 &nbsp;
 &nbsp;
+&nbsp;
+&nbsp;
+&nbsp;//
+&nbsp;//
+&nbsp;//    //*******************  selectAllFromPaymentDetails *****************
+&nbsp;//    @GetMapping(&quot;selectAllFromPaymentDetails&quot;)
+&nbsp;//    public static HashMap&lt;String, Object&gt; selectAllFromPaymentDetails()throws SQLException {
+&nbsp;//        return TravellerRepository.selectAllFromPaymentDetails();
+&nbsp;//    }
+&nbsp;//
+&nbsp;//
+&nbsp;//
+&nbsp;//
+&nbsp;//    // ***************  Find PersonalDetails by UserID  ***************
+&nbsp;//    @GetMapping(&quot;selectAllFromPaymentDetailsForPass/{personId}&quot;)
+&nbsp;//    public static JSONObject findUser(@PathVariable int personId, PassAPIModel passAPIModel)throws SQLException {
+&nbsp;//        JSONObject jsonObject = new JSONObject();
+&nbsp;//        jsonObject = TravellerRepository.passGeneration(personId);
+&nbsp;//        return jsonObject;
+&nbsp;//    }
+&nbsp;//}
 </code>
 </pre>
 </div>
@@ -209,7 +165,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-01-24 11:24</div>
+    <div style="float:right;">generated on 2023-01-31 12:45</div>
 </div>
 </body>
 </html>

@@ -59,10 +59,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    58.3%
+    64.3%
   </span>
   <span class="absValue">
-    (7/12)
+    (9/14)
   </span>
 </td>
 </tr>
@@ -76,6 +76,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package OnlineBusPassGeneration.OnlineBusPass.connection;
 &nbsp;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;
 &nbsp;import java.sql.Connection;
 &nbsp;import java.sql.DriverManager;
 &nbsp;import java.sql.SQLException;
@@ -83,6 +86,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;public class Connectivity {</b>
 &nbsp;    static Connection connection;
 &nbsp;    public static Connection CreateConnection(){
+<b class="fc">&nbsp;        Logger log = LoggerFactory.getLogger(Connectivity.class);</b>
 &nbsp;        try {
 <b class="fc">&nbsp;            Class.forName(&quot;org.postgresql.Driver&quot;);</b>
 <b class="fc">&nbsp;            String url = &quot;jdbc:postgresql://localhost:5432/buspass&quot;;</b>
@@ -97,6 +101,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;        } catch (SQLException e) {</b>
 <b class="nc">&nbsp;            e.printStackTrace();</b>
 <b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        log.info(&quot;connection established successfully&quot;);</b>
 <b class="fc">&nbsp;        return connection;</b>
 &nbsp;
 &nbsp;    }
@@ -124,7 +130,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-01-24 11:24</div>
+    <div style="float:right;">generated on 2023-01-31 12:45</div>
 </div>
 </body>
 </html>

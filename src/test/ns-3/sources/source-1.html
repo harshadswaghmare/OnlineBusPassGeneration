@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > PersonController</title>
+  <title>Coverage Report > PassAPIController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">OnlineBusPassGeneration.OnlineBusPass.controller</a>
 </div>
 
-<h1>Coverage Summary for Class: PersonController (OnlineBusPassGeneration.OnlineBusPass.controller)</h1>
+<h1>Coverage Summary for Class: PassAPIController (OnlineBusPassGeneration.OnlineBusPass.controller)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">PersonController</td>
+  <td class="name">PassAPIController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -80,24 +80,25 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import OnlineBusPassGeneration.OnlineBusPass.repository.PassAPIRepository;
 &nbsp;import OnlineBusPassGeneration.OnlineBusPass.repository.UserRepository;
 &nbsp;import org.json.simple.JSONObject;
-&nbsp;import org.springframework.http.HttpStatus;
 &nbsp;import org.springframework.http.ResponseEntity;
 &nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.sql.Date;
 &nbsp;import java.sql.SQLException;
 &nbsp;
 &nbsp;@RestController
 &nbsp;@RequestMapping(&quot;api/pass&quot;)
-<b class="fc">&nbsp;public class PersonController {</b>
+<b class="fc">&nbsp;public class PassAPIController {</b>
 &nbsp;
 &nbsp;   // ***************  select  PersonalData  ***************
-&nbsp;    @GetMapping(&quot;/get&quot;)
-&nbsp;    public static ResponseEntity&lt;JSONObject&gt; GetAllUserData()throws SQLException {
-<b class="nc">&nbsp;        return PassAPIRepository.retrieveAllDataFromPersonalDetails();</b>
+&nbsp;    @GetMapping
+&nbsp;    public static ResponseEntity&lt;JSONObject&gt; GetAllUserData(PassAPIModel passAPIModel)throws SQLException {
+<b class="nc">&nbsp;        return PassAPIRepository.retrieveAllDataFromPersonalDetails(passAPIModel);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
 &nbsp;    //***************  Insert Data Into PersonalDetails  ***************
-&nbsp;    @PostMapping(&quot;/post&quot;)
+&nbsp;    @PostMapping
 &nbsp;    public String insertData( @RequestBody PassAPIModel passAPIModel) throws SQLException {
 <b class="nc">&nbsp;        return PassAPIRepository.insertPersonal(passAPIModel);</b>
 &nbsp;    }
@@ -105,7 +106,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    // ********************  Renewal Of pass ********************
 &nbsp;
-&nbsp;    @PutMapping(&quot;put/{PassID}&quot;)
+&nbsp;    @PutMapping(&quot;/{PassID}&quot;)
 &nbsp;    public static String update(@PathVariable int PassID,@RequestBody PassAPIModel passAPIModel) throws SQLException {
 <b class="nc">&nbsp;        String result = String.valueOf(PassAPIRepository.update(PassID,passAPIModel));</b>
 <b class="nc">&nbsp;        return result;</b>
@@ -113,12 +114,15 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;
 &nbsp;    //***************  Delete From PersonalDetails  ***************
-&nbsp;    @DeleteMapping(&quot;delete/{passID}&quot;)
+&nbsp;    @DeleteMapping(&quot;/{passID}&quot;)
 &nbsp;    public boolean delete(@PathVariable int passID) {
 &nbsp;        // boolean result = false;
 <b class="nc">&nbsp;       boolean result = PassAPIRepository.deletePassAPI(passID);</b>
 <b class="nc">&nbsp;       return result;</b>
 &nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
 &nbsp;//
 &nbsp;//
 &nbsp;//    //***************  Insert into source List  ***************
@@ -185,7 +189,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-01-24 11:24</div>
+    <div style="float:right;">generated on 2023-01-31 12:45</div>
 </div>
 </body>
 </html>

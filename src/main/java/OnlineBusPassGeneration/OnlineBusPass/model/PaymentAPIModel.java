@@ -10,20 +10,18 @@ public class PaymentAPIModel
     int cvv;
     String nameOnCard;
     String transactionID;
-    int charge;
+    int amount;
 
     int passID;
 
     //*******newly added
 
-    String fromdate;
-    String todate;
+    String date;
     String status;
     //************
-    OnlineBusPassGeneration.OnlineBusPass.model.PassAPIModel passAPIModel;
-    UserLogin userLogin;
 
-    public PaymentAPIModel(int payID, int userID, int passID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID,PassAPIModel passAPIModel, UserLogin userLogin, int charge, String fromdate, String todate, String status) {
+
+    public PaymentAPIModel(int payID, int userID,int passID, String cardType, String cardNo, String cardExpiry, int cvv, String nameOnCard, String transactionID, int amount,String date) {
         this.payID = payID;
         this.userID = userID;
         this.passID = passID;
@@ -33,12 +31,10 @@ public class PaymentAPIModel
         this.cvv = cvv;
         this.nameOnCard = nameOnCard;
         this.transactionID = transactionID;
-        this.passAPIModel = passAPIModel;
-        this.userLogin = userLogin;
-        this.charge = charge;
-        this.fromdate = fromdate;
-        this.todate = todate;
-        this.status = status;
+        this.amount = amount;
+        this.date = date;
+
+
 
     }
     public PaymentAPIModel ()
@@ -46,37 +42,31 @@ public class PaymentAPIModel
 
     }
 
-    public String getFromdate() {
-        return fromdate;
-    }
-
-    public void setFromdate(String fromdate) {
-        this.fromdate = fromdate;
-    }
-
-    public String getTodate() {
-        return todate;
-    }
-
-    public void setTodate(String todate) {
-        this.todate = todate;
-    }
-
-    public int getCharge(int charge) {
-        return this.charge;
-    }
-
-    public void setCharge(int charge) {
-        this.charge = charge;
-    }
-
     public int getPassID() {
         return passID;
     }
 
-    public void setPassID(int personalID) {
-        this.passID = personalID;
+    public void setPassID(int passID) {
+        this.passID = passID;
     }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
+    public int getAmount(int charge) {
+        return this.amount;
+    }
+
+    public void setAmount(int charge) {
+        this.amount = amount;
+    }
+
 
     public int getPayID() {
         return payID;
@@ -153,13 +143,10 @@ public class PaymentAPIModel
                 ", cvv=" + cvv +
                 ", nameOnCard='" + nameOnCard + '\'' +
                 ", transactionID='" + transactionID + '\'' +
-                ", charge=" + charge +
+                ", amount=" + amount +
                 ", passID=" + passID +
-                ", fromdate='" + fromdate + '\'' +
-                ", todate='" + todate + '\'' +
+                ", fromdate='" + date + '\'' +
                 ", status='" + status + '\'' +
-                ", passAPIModel=" + passAPIModel +
-                ", userLogin=" + userLogin +
                 '}';
     }
 }

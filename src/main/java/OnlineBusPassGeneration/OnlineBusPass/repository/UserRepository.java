@@ -40,6 +40,7 @@ public class UserRepository {
 
 
 
+
     //Select All data from userAPI
 
     public static ResponseEntity<String> retrieveAllData() throws SQLException {
@@ -213,10 +214,10 @@ public class UserRepository {
             connection = Connectivity.CreateConnection();
             String Query = "select userid from userlogin where userID= "+userID;
             preparedStatement = connection.prepareStatement(Query);
-            preparedStatement.setInt(1,userLogin.getUserid());
+            //preparedStatement.setInt(1,userLogin.getUserid());
             ResultSet rs = preparedStatement.executeQuery();
-            if(!rs.next()) {
-
+            if(rs.next())
+            {
                 String query = "update userLogin set email = ?,password =?, mobileNo=? where userID =" + userID;
                 preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1, userLogin.getEmail());
@@ -230,7 +231,7 @@ public class UserRepository {
                     return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }else{
-                return ResponseEntity.ok("user not found");
+                return ResponseEntity.ok("UserID "+userID+" not found");
             }
 
 
@@ -337,10 +338,10 @@ public class UserRepository {
             preparedStatement = connection.prepareStatement(query);
             //preparedStatement.setString(1,email);
             ResultSet rs = preparedStatement.executeQuery();
-          while(rs.next()) {
-              JSONObject obj = new JSONObject();
+           while(rs.next()) {
+                JSONObject obj = new JSONObject();
                 obj.put("userid", rs.getInt("userid"));
-                obj.put("username", rs.getString("username"));
+                //obj.put("username", rs.getString("username"));
                 obj.put("email", rs.getString("email"));
                 obj.put("firstname", rs.getString("firstname"));
                 obj.put("lastname", rs.getString("lastname"));
@@ -502,11 +503,13 @@ public class UserRepository {
                 }
                 if (userLogin.getLastname().isEmpty()) {
                     log.info("Enter Last Name");
-                    return ResponseEntity.ok("enter lastname");
+                    //return ResponseEntity.ok("enter lastname");
+                    return new ResponseEntity<>("enter lastname",HttpStatus.EXPECTATION_FAILED);
                 }
                 if (userLogin.getUserIdentity().isEmpty()) {
                     log.info("Enter Aadhaar Number");
-                    return ResponseEntity.ok("Enter Aadhaar Number");
+                    //return ResponseEntity.ok("Enter Aadhaar Number");
+                    return new ResponseEntity<>("Enter Aadhaar Number",HttpStatus.EXPECTATION_FAILED);
                 }
                 if (String.valueOf(userLogin.getAge()).isEmpty()) {
                     log.info("Enter Age ");

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 @RestController
 @RequestMapping("api/users")
-public class TravellerController {
+public class UserAPIController {
 
 
     //***************  Insert into userLogin  ******************
@@ -100,7 +100,7 @@ public class TravellerController {
 //        System.out.println(a);
 //        return a;
 //    }
-//
+
 //    //************ Calculate total amount value fromDate to ToDate
 //
 //    @GetMapping("calculateTotalAmountFromDateToDate/{fromdate}/{fromDate}")
