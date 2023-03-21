@@ -16,7 +16,8 @@
 	<properties>
 		<java.version>17</java.version>
 
-	<!--	Added new properties-->
+	<!--	Added new properties for sonarqube-->
+		
 		<jacoco.version>0.8.8</jacoco.version>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -88,7 +89,7 @@
 		</dependency>
 	</dependencies>
 
-	<!--Added sonar qube plugins-->
+	<!--Added new plugins for sonar qube -->
 
 	<build>
 		<pluginManagement>
